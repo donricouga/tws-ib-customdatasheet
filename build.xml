@@ -1,0 +1,52 @@
+<!--
+Interesting targets:
+
+client (default target) - creates furniture.jar
+server - builds server.jar
+clean - removes derived files
+
+You can download the ant build software that uses this file from
+http://jakarta.apache.org/ant
+
+-->
+
+<project name="TWS-Custom-DataSheet"  default="compile"  basedir=".">
+
+    <property name="src.dir" value="src"/>
+    <property name="classes.dir" value="out"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="jar.dir" value="."/>
+
+    <target name="init">
+      <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+      <javac srcdir=" ${src.dir}" destdir="${classes.dir}" debug="true">
+	    <include name="**/*.java"/>
+          <classpath>
+              <fileset dir="${lib.dir}">
+                  <include name="**/*.jar" />
+              </fileset>
+          </classpath>
+      </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir=".">
+            <manifest>
+                <attribute name="Main-Class" value="ca.riveros.ib.ui.MainDataSheet"/>
+            </manifest>
+            <zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>
+        </jar>
+
+    </target>
+
+    <target name="clean">
+      <delete dir="${classes.dir}"/>
+        <delete file="${jar.dir}/${ant.project.name}.jar"/>
+    </target>
+</project>
+
+
