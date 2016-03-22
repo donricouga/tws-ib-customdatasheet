@@ -76,7 +76,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 DefaultComboBoxModel dcbm = (DefaultComboBoxModel) cb.getModel();
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
                 String accountName = (String) cb.getSelectedItem();
-                model.setSelectedAcctCode(accountName);
+                model.resetModel(accountName);
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });

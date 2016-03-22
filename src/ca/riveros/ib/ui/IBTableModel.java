@@ -20,9 +20,6 @@ public class IBTableModel extends DefaultTableModel {
     /** Indexes the data by ContractID + AccountCode --> Index in the Model **/
     HashMap<Integer, Integer> dataMap = new HashMap<Integer, Integer>(200);
 
-    /** Indexes the data by AccountCode --> Set of Indexes in the Model **/
-    //HashMap<String, Set<Integer>> accountCodeDataMap = new HashMap<String, Set<Integer>>(200);
-
     /**
      * When Updating Account Data, we can use this method to find the index in the GUI and then simply update
      * that particular Row.
@@ -33,28 +30,12 @@ public class IBTableModel extends DefaultTableModel {
         return dataMap.get(contractId);
     }
 
+
     /**
-     * When updating account Summary Level Data, we can use this method to find the index of all rows
-     * that match this account Code and update.
-     * @param accountCode
-     * @return Row Indexes matching the accountCode
+     * Adds or updates a row in the model. Needs to be called in the Swing Event Dispatcher Thread.
+     * @param vector
      */
-    /*public Integer[] getRowsByAccountCode(String accountCode) {
-        Set<Integer> set = accountCodeDataMap.get(accountCode);
-        if(set == null)
-            return null;
-        return accountCodeDataMap.get(accountCode).toArray(new Integer[0]);
-    }*/
-
     public void addOrUpdateRow(Vector vector) {
-
-        //Need to figure out if the accountCode has Changed. If it has, reset everything!
-        String accountCode = (String) vector.get(TableColumnNames.getIndexByName("Account Name"));
-        if(!accountCode.equals(selectedAcctCode)) {
-            dataMap.clear();
-            clearDataModel();
-            selectedAcctCode = accountCode;
-        }
 
         //Add to DataMap
         Integer contractId = (Integer) vector.get(TableColumnNames.getIndexByName("Contract"));
@@ -63,16 +44,6 @@ public class IBTableModel extends DefaultTableModel {
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
             System.out.println("INSERTING --> " + vector);
-            //Add to AccountCodeMap
-            /*if (accountCodeDataMap.containsKey(accountCode)) {
-                Set<Integer> set = accountCodeDataMap.get(accountCode);
-                set.add(super.getRowCount());
-            } else {
-                TreeSet<Integer> treeSet = new TreeSet<Integer>();
-                treeSet.add(super.getRowCount());
-                accountCodeDataMap.put(accountCode, treeSet);
-            }*/
-
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
         }
@@ -88,15 +59,13 @@ public class IBTableModel extends DefaultTableModel {
 
     }
 
-    public void clearDataModel() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                for(int i = 0; i < getRowCount() - 1; i++) {
-                    removeRow(i);
-                }
-            }
-        });
-
+    public void resetModel(String accountCode) {
+        dataMap.clear();
+        int rowCount = getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            removeRow(0);
+        }
+        selectedAcctCode = accountCode;
     }
 
     public String getSelectedAcctCode() {

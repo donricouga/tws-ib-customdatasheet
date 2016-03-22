@@ -42,6 +42,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("UNREALIZED PNL : " + position.unrealPnl());
         System.out.println("ACCOUNT : " + position.account());
         System.out.println("--------------------------- END PORTFOLIO FEED -------------------");
+        //System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
 
 
