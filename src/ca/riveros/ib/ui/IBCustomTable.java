@@ -9,19 +9,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
 
     static { NewLookAndFeel.register(); }
+
+    private static final String DEFAULT_SELECT_ITEM = "Select Account";
 
     private ApiController m_controller;
     public static IBCustomTable INSTANCE = new IBCustomTable();
@@ -39,6 +38,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     /** Info GUI **/
     private final JTextArea m_msg = new JTextArea();
     private final ConnectionPanel m_connectionPanel = new ConnectionPanel();
+    private DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
 
     /** DATA **/
     private final ArrayList<String> m_acctList = new ArrayList<String>();
@@ -48,27 +48,10 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Connect to IB TWS
         controller().connect("127.0.0.1", 7497, 0);
 
-        //Then Create the GUI
+        //Then Create the GUIx
         JFrame frame = new JFrame("Custom IB Data Table");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Object rows[][] = { { "J", 23 }, { "R", 24, }, { "E", 21, }, { "B", 27, }, { "A", 25, },{ "S", 22, }, };
-        /* Specify column names */
-        String columns[] = TableColumnNames.getNames();
-        //String columns[] = { "Name", "Age" };
-
-        /* Create a TableModel */
-        /*TableModel model = new DefaultTableModel(rows, columns) {
-            public Class getColumnClass(int column) {
-                Class returnValue;
-                if ((column >= 0) && (column < getColumnCount())) {
-                    returnValue = getValueAt(0, column).getClass();
-                } else {
-                    returnValue = Object.class;
-                }
-                return returnValue;
-            }
-        };*/
         model = createTableModel();
 
         //Create the JTable with the Default TableModel
@@ -85,11 +68,16 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Create a combobox
         //Here we create a combo box that hides the rows that aren't relevant
-        JComboBox comboBox = new JComboBox(INSTANCE.accountList().toArray(new String[]{}));
+        JComboBox comboBox = new JComboBox(INSTANCE.comboBoxModel);
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JComboBox cb = (JComboBox) e.getSource();
+                DefaultComboBoxModel dcbm = (DefaultComboBoxModel) cb.getModel();
+                dcbm.removeElement(DEFAULT_SELECT_ITEM);
+                String accountName = (String) cb.getSelectedItem();
+                model.setSelectedAcctCode(accountName);
+                INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });
 
@@ -104,27 +92,21 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        System.out.println(accountList());
-
 
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
 
+        //Create Gui and request Account Summary
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 INSTANCE.createAndShowGUI();
-                requestAllAccountUpdates();
-            }
-
-            public void requestAllAccountUpdates() {
-                for(String acctCode : INSTANCE.accountList()) {
-                    INSTANCE.controller().reqAccountUpdates(true, acctCode, new AccountInfoHandler());
-                }
+                INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
             }
 
         });
+
     }
 
 
@@ -175,16 +157,27 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         show( "Received account list");
         m_acctList.clear();
         m_acctList.addAll( list);
+        comboBoxModel.addElement(DEFAULT_SELECT_ITEM);
+        for(String s : list) {
+            comboBoxModel.addElement(s);
+        }
     }
 
+    public void addNewAccountToList(String accountCode) {
+        m_acctList.add(accountCode);
+        comboBoxModel.addElement(accountCode);
+    }
+
+
     @Override public void show( final String str) {
-        SwingUtilities.invokeLater( new Runnable() {
-            @Override public void run() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
                 m_msg.append(str);
-                m_msg.append( "\n\n");
+                m_msg.append("\n\n");
 
                 Dimension d = m_msg.getSize();
-                m_msg.scrollRectToVisible( new Rectangle( 0, d.height, 1, 1) );
+                m_msg.scrollRectToVisible(new Rectangle(0, d.height, 1, 1));
             }
         });
     }
@@ -203,10 +196,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         for(String name : TableColumnNames.getNames()) {
             model.addColumn(name);
         }
-
         //Add Listener to model
         //model.addTableModelListener(new RTTableListener());
-
         return model;
     }
 

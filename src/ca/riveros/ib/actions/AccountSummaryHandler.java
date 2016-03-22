@@ -18,20 +18,19 @@ public class AccountSummaryHandler implements ApiController.IAccountSummaryHandl
 
     @Override
     public void accountSummary(String account, AccountSummaryTag tag, String value, String currency) {
-        if (IBCustomTable.INSTANCE.accountList().contains(account)) {
-            if("InitMarginReq".equals(tag)) {
-                Integer [] rows = model.getRowsByAccountCode(account);
-                updateAccount(rows, value, TableColumnNames.getIndexByName("Margin Initial Change"));
+        if (account.equals(model.getSelectedAcctCode())) {
+            if("InitMarginReq".equals(tag.InitMarginReq.toString())) {
+                updateAccount(fillRows(model.getRowCount()), value, TableColumnNames.getIndexByName("Margin Initial Change"));
 
             }
-            if("NetLiquidation".equals(tag)) {
-                Integer [] rows = model.getRowsByAccountCode(account);
-                updateAccount(rows, value, TableColumnNames.getIndexByName("Net Liq"));
+            if("NetLiquidation".equals(tag.NetLiquidation.toString())) {
+                updateAccount(fillRows(model.getRowCount()), value, TableColumnNames.getIndexByName("Net Liq"));
             }
 
         } else {
-            //Add New account to list and update model and make an account Update Req
-            //TODO
+            //Add new account to drop down box if it's not already there.
+            if(!IBCustomTable.INSTANCE.accountList().contains(account))
+                IBCustomTable.INSTANCE.addNewAccountToList(account);
         }
     }
 
@@ -47,13 +46,22 @@ public class AccountSummaryHandler implements ApiController.IAccountSummaryHandl
      * @param column
      */
     public void updateAccount(Integer []rows, String value, Integer column) {
-        for(Integer row : rows) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for(Integer row : rows) {
                     model.setValueAt(Double.valueOf(value), row, column);
                 }
-            });
+            }
+        });
+    }
+
+    private Integer []fillRows(Integer rowCount) {
+        Integer []rowIndexes = new Integer[rowCount];
+        for(int i = 0; i < rowCount; i++) {
+            rowIndexes[i] = i;
         }
+        return rowIndexes;
     }
 }
