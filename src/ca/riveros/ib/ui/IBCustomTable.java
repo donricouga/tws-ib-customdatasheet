@@ -26,7 +26,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     public static IBCustomTable INSTANCE = new IBCustomTable();
     public IBTableModel model;
 
-
     /** Logging to the GUI **/
     private final JTextArea m_inLog = new JTextArea();
     private final JTextArea m_outLog = new JTextArea();
@@ -43,6 +42,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     /** DATA **/
     private final ArrayList<String> m_acctList = new ArrayList<String>();
     public ArrayList<String> accountList() 	{ return m_acctList; }
+
+    /** Only one of these should exists at any given moment **/
+    private AccountSummaryHandler accountSummaryHandler = null;
 
     public void createAndShowGUI() {
         //Connect to IB TWS
@@ -72,11 +74,18 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(accountSummaryHandler != null) {
+                    INSTANCE.controller().cancelAccountSummary(accountSummaryHandler);
+                }
                 JComboBox cb = (JComboBox) e.getSource();
                 DefaultComboBoxModel dcbm = (DefaultComboBoxModel) cb.getModel();
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
                 String accountName = (String) cb.getSelectedItem();
                 model.resetModel(accountName);
+                //accountSummaryHandler = new AccountSummaryHandler();
+                //INSTANCE.controller().reqAccountSummary( "All", new AccountSummaryTag[]{ AccountSummaryTag.AccountType.InitMarginReq,
+                        //AccountSummaryTag.NetLiquidation}, accountSummaryHandler);
+                //try {Thread.currentThread().sleep(2000);} catch(Exception ex) {ex.printStackTrace();}
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });
@@ -102,7 +111,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
             @Override
             public void run() {
                 INSTANCE.createAndShowGUI();
-                INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
             }
 
         });

@@ -16,6 +16,8 @@ public class Test implements EWrapper
 
     private EClientSocket client = null;
 
+    private List<String> keyNames = new ArrayList<String>(100);
+
     public Test ()
     {
         System.out.println("CREATING RTAccountUpdates ...");
@@ -38,14 +40,25 @@ public class Test implements EWrapper
 
         //Call Request Account Updates
         String []accountNames ={"DF276965","DU276966","DU276967","DU276968","DU276969","DU276970"};
-        //for(String s : accountNames) {
-            client.reqAccountUpdates(true,"All");
-        //}
+
+        client.cancelAccountSummary(3);
+        client.reqAccountUpdates(true, "DU276970");
+
 
     }
 
     public static void main(String []args) {
         new Test();
+    }
+
+    public String accountTagValues() {
+        StringBuffer sb = new StringBuffer();
+        AccountSummaryTag [] accountSummaryTagsArray = AccountSummaryTag.values();
+        for(AccountSummaryTag tag : accountSummaryTagsArray) {
+            sb.append(tag.name()).append(",");
+        }
+        String str =  sb.toString();
+        return str.substring(0, str.length()-1);
     }
 
 
@@ -63,13 +76,16 @@ public class Test implements EWrapper
     @Override public void historicalData(int reqId, String date, double open,
                                          double high, double low, double close, int volume, int count,
                                          double WAP, boolean hasGaps) {}
-    @Override public void managedAccounts(String accountsList){}
+    @Override public void managedAccounts(String accountsList){
+        System.out.println("Received Managed Accounts " + accountsList);
+    }
     @Override public void commissionReport(CommissionReport cr){}
     @Override public void position(String account, Contract contract, int pos, double avgCost){}
     @Override public void positionEnd(){}
 
     @Override public void accountSummary(int reqId, String account, String tag, String value, String currency)
     {
+        System.out.println("Received Account Summary for " + account);
     }
 
     @Override public void accountSummaryEnd(int reqId){}
@@ -95,7 +111,11 @@ public class Test implements EWrapper
     @Override public void updateAccountValue(String key, String value, String currency,
                                              String accountName)
     {
-        //System.out.println("RECEIVED Account Vallue \nKey : " + key + " Value : " + value + " Currency : " + currency + " accountName " + accountName);
+        if(!keyNames.contains(key)) {
+            keyNames.add(key);
+            System.out.println("KEY : " + key);
+        }
+
 
     }
     @Override  public void updateMktDepth(int symbolId, int position, int operation,int side, double price, int size){}
@@ -107,7 +127,7 @@ public class Test implements EWrapper
                                           double unrealizedPNL, double realizedPNL, String accountName)
     {
 
-        System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
+       /* System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
         System.out.println("CONTRACT : " + contract.m_conId);
         System.out.println("POSITION : " + position);
         System.out.println("MARKET PRICE : " + marketPrice);
@@ -116,7 +136,8 @@ public class Test implements EWrapper
         System.out.println("REALIZED PNL : " + realizedPNL);
         System.out.println("UNREALIZED PNL : " + unrealizedPNL);
         System.out.println("ACCOUNT : " + accountName);
-        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");
+        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
+        System.out.println("RECEIVED UPDATE FOR CONTRACT : " + contract.m_conId + " ACCOUNT " + accountName);
 
 
     }

@@ -12,12 +12,38 @@ import java.util.Vector;
 
 public class AccountInfoHandler implements ApiController.IAccountHandler {
 
+    private static final String INIT_MARGIN_REQ = "InitMarginReq";
+
+    private static final String NET_LIQUIDATION = "NetLiquidation";
+
     /** Reference to the main model **/
     private IBTableModel model = IBCustomTable.INSTANCE.getModel();
 
+
+    /**
+     * This Method seems to occur before updatePortfolio
+     * @param account
+     * @param key
+     * @param value
+     * @param currency
+     */
     @Override
     public void accountValue(String account, String key, String value, String currency) {
-        //not in this project
+        if(INIT_MARGIN_REQ.equals(key)) {
+            System.out.println("Received InitMarginReq " + value + " for account " + account);
+            if(model.getRowCount() == 0)
+                model.setInitMarginReq(Double.valueOf(value));
+            else
+                model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Margin Initial Change"));
+
+        }
+        else if(NET_LIQUIDATION.equals(key)) {
+            System.out.println("Received NetLiquidation " + value + " for account " + account);
+            if(model.getRowCount() == 0)
+                model.setNetLiq(Double.valueOf(value));
+            else
+                model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Net Liq"));
+        }
     }
 
     @Override
@@ -32,7 +58,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
 
     @Override
     public void updatePortfolio(Position position) {
-        System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
+        /*System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
         System.out.println("CONTRACT : " + position.contract().toString());
         System.out.println("POSITION : " + position.position());
         System.out.println("MARKET PRICE : " + position.marketPrice());
@@ -41,7 +67,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("REALIZED PNL : " + position.realPnl());
         System.out.println("UNREALIZED PNL : " + position.unrealPnl());
         System.out.println("ACCOUNT : " + position.account());
-        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");
+        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
         //System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
 
@@ -67,29 +93,29 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(position.realPnl());
             v.add(position.account());
             v.add(position.averageCost());
-            v.add(0.0); // Bid Price
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0); //Margin Initial Change
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0); //Target Profit
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0); //Closing Position for Loss
-            v.add(0.0);
-            v.add(0.0); //Delta
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0); //Edge
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0);
-            v.add(0.0); // Number of Contracts To Trade
+            v.add(null); // Bid Price
+            v.add(null);
+            v.add(null);
+            v.add(null); //Margin Initial Change
+            v.add(null);
+            v.add(null);
+            v.add(null); //Target Profit
+            v.add(null);
+            v.add(null);
+            v.add(null); //Closing Position for Loss
+            v.add(null);
+            v.add(null); //Delta
+            v.add(null);
+            v.add(null);
+            v.add(null); //Edge
+            v.add(null);
+            v.add(null);
+            v.add(null);
+            v.add(null);
+            v.add(null);
+            v.add(null);
+            v.add(null);
+            v.add(null); // Number of Contracts To Trade
             model.addOrUpdateRow(v);
         }
     }

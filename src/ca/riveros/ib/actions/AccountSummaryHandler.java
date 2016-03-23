@@ -18,20 +18,22 @@ public class AccountSummaryHandler implements ApiController.IAccountSummaryHandl
 
     @Override
     public void accountSummary(String account, AccountSummaryTag tag, String value, String currency) {
-        if (account.equals(model.getSelectedAcctCode())) {
-            if("InitMarginReq".equals(tag.InitMarginReq.toString())) {
+        System.out.println("COMPARING " + account + " TO MODEL SELECTED VALUE " + model.getSelectedAcctCode());
+        if(account.equals(model.getSelectedAcctCode())) {
+            if ("InitMarginReq".equals(tag.name())) {
+                System.out.println("ACCOUNT : " + account + " TAG : " + tag + " VALUE : " + value);
                 updateAccount(fillRows(model.getRowCount()), value, TableColumnNames.getIndexByName("Margin Initial Change"));
 
             }
-            if("NetLiquidation".equals(tag.NetLiquidation.toString())) {
+            if ("NetLiquidation".equals(tag.name())) {
+                System.out.println("ACCOUNT : " + account + " TAG : " + tag + " VALUE : " + value);
                 updateAccount(fillRows(model.getRowCount()), value, TableColumnNames.getIndexByName("Net Liq"));
             }
-
-        } else {
-            //Add new account to drop down box if it's not already there.
-            if(!IBCustomTable.INSTANCE.accountList().contains(account))
-                IBCustomTable.INSTANCE.addNewAccountToList(account);
         }
+
+        //Add new account to drop down box if it's not already there.
+        if(!IBCustomTable.INSTANCE.accountList().contains(account))
+            IBCustomTable.INSTANCE.addNewAccountToList(account);
     }
 
     @Override
@@ -46,15 +48,18 @@ public class AccountSummaryHandler implements ApiController.IAccountSummaryHandl
      * @param column
      */
     public void updateAccount(Integer []rows, String value, Integer column) {
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                for(Integer row : rows) {
-                    model.setValueAt(Double.valueOf(value), row, column);
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    for (Integer row : rows) {
+                        model.setValueAt(Double.valueOf(value), row, column);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Integer []fillRows(Integer rowCount) {

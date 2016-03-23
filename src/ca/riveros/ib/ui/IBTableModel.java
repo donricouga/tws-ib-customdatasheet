@@ -1,13 +1,11 @@
 package ca.riveros.ib.ui;
 
-import ca.riveros.ib.data.IBDataKey;
+import ca.riveros.ib.data.AccountSummaryValues;
 import ca.riveros.ib.util.TableColumnNames;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by rriveros on 3/20/16.
@@ -17,8 +15,14 @@ public class IBTableModel extends DefaultTableModel {
     /** Currently Selected Account Code **/
     private String selectedAcctCode = null;
 
-    /** Indexes the data by ContractID + AccountCode --> Index in the Model **/
-    HashMap<Integer, Integer> dataMap = new HashMap<Integer, Integer>(200);
+    /** Temporary to Hold NetLiq **/
+    private Double netLiq = null;
+
+    /** Temporary to Hold Init Margin Request **/
+    private Double initMarginReq = null;
+
+    /** Indexes the data by ContractID --> Index in the Model **/
+    ConcurrentHashMap <Integer,Integer>dataMap = new ConcurrentHashMap<Integer, Integer>(200);
 
     /**
      * When Updating Account Data, we can use this method to find the index in the GUI and then simply update
@@ -44,6 +48,10 @@ public class IBTableModel extends DefaultTableModel {
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
             System.out.println("INSERTING --> " + vector);
+            //have to get NetLiq and InitMarginReq from fields above since updatePortfolio() runs after accountValue()
+            vector.set(TableColumnNames.getIndexByName("Margin Initial Change"), initMarginReq);
+            vector.set(TableColumnNames.getIndexByName("Net Liq"), netLiq);
+
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
         }
@@ -52,6 +60,7 @@ public class IBTableModel extends DefaultTableModel {
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
+                    System.out.println("Setting " + o + " At " + rowIndex + " Column " + i);
                     super.setValueAt(o, rowIndex, i);
                 }
             }
@@ -59,8 +68,17 @@ public class IBTableModel extends DefaultTableModel {
 
     }
 
+    public void updateAllRowsAtDoubleColumn(Double value, int column) {
+        int rowCount = getRowCount();
+        for(int i = 0; i < rowCount; i++) {
+            setValueAt(value, i, column);
+        }
+    }
+
     public void resetModel(String accountCode) {
         dataMap.clear();
+        initMarginReq = null;
+        netLiq = null;
         int rowCount = getRowCount();
         for (int i = 0; i < rowCount; i++) {
             removeRow(0);
@@ -72,7 +90,19 @@ public class IBTableModel extends DefaultTableModel {
         return selectedAcctCode;
     }
 
-    public void setSelectedAcctCode(String selectedAcctCode) {
-        this.selectedAcctCode = selectedAcctCode;
+    public Double getNetLiq() {
+        return netLiq;
+    }
+
+    public void setNetLiq(Double netLiq) {
+        this.netLiq = netLiq;
+    }
+
+    public Double getInitMarginReq() {
+        return initMarginReq;
+    }
+
+    public void setInitMarginReq(Double initMarginReq) {
+        this.initMarginReq = initMarginReq;
     }
 }
