@@ -48,7 +48,12 @@ public class Test implements EWrapper
     }
 
     public static void main(String []args) {
-        new Test();
+        //new Test();
+        System.out.println(ca.riveros.ib.ui.Util.formatNumber("323523623.34236346"));
+        System.out.println(ca.riveros.ib.ui.Util.formatNumber("37347345437.45"));
+        System.out.println(ca.riveros.ib.ui.Util.formatNumber("84568.545776664"));
+        System.out.println(ca.riveros.ib.ui.Util.formatNumber("554.44"));
+
     }
 
     public String accountTagValues() {

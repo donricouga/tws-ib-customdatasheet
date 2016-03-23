@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -38,6 +39,11 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     private final JTextArea m_msg = new JTextArea();
     private final ConnectionPanel m_connectionPanel = new ConnectionPanel();
     private DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+    private JTextField accountNetLiq = new JTextField("0.0",8);
+    private JTextField totalNetLiq = new JTextField("0.0",8);
+    private JTextField totalInitMarg = new JTextField("0.0",8);
+    private JTextField perCapToTrade = new JTextField("     ",3);
+    private JTextField perCapTraded = new JTextField("0.0",3);
 
     /** DATA **/
     private final ArrayList<String> m_acctList = new ArrayList<String>();
@@ -60,6 +66,14 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JTable table = new JTable(model);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setBackground(row % 2 == 0 ? Color.LIGHT_GRAY : Color.WHITE);
+                return this;
+            }
+        });
         RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         table.setRowSorter(sorter);
 
@@ -82,10 +96,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
                 String accountName = (String) cb.getSelectedItem();
                 model.resetModel(accountName);
-                //accountSummaryHandler = new AccountSummaryHandler();
-                //INSTANCE.controller().reqAccountSummary( "All", new AccountSummaryTag[]{ AccountSummaryTag.AccountType.InitMarginReq,
-                        //AccountSummaryTag.NetLiquidation}, accountSummaryHandler);
-                //try {Thread.currentThread().sleep(2000);} catch(Exception ex) {ex.printStackTrace();}
+                System.out.println("Requesting account update for accountName" + accountName);
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });
@@ -155,10 +166,12 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
     @Override public void error(Exception e) {
         show( e.toString() );
+        e.printStackTrace();
     }
 
     @Override public void message(int id, int errorCode, String errorMsg) {
         show( id + " " + errorCode + " " + errorMsg);
+        System.out.println("Message -> " + id + " " + errorCode + " " + errorMsg);
     }
 
     @Override public void accountList(ArrayList<String> list) {
@@ -211,25 +224,25 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
     public JPanel createTotalStats() {
         JPanel jPanel = new JPanel();
-        jPanel.add(new JLabel("NetLiq"));
-        JTextField nlTextField = new JTextField("35323.32");
-        nlTextField.setEditable(false);
-        jPanel.add(nlTextField);
+        jPanel.add(new JLabel("Total Net Liq"));
+        totalNetLiq.setEditable(false);
+        jPanel.add(totalNetLiq);
+        jPanel.add(new JSeparator());
+        jPanel.add(new JLabel("Account Net Liq"));
+        accountNetLiq.setEditable(false);
+        jPanel.add(accountNetLiq);
         jPanel.add(new JSeparator());
         jPanel.add(new JLabel("Total Initial Margin"));
-        JTextField imTextField = new JTextField("436434");
-        imTextField.setEditable(false);
-        jPanel.add(imTextField);
+        totalInitMarg.setEditable(false);
+        jPanel.add(totalInitMarg);
         jPanel.add(new JSeparator());
         jPanel.add(new JLabel("Percentage Capital To Trade"));
-        JTextField pctTextField = new JTextField("        ");
-        pctTextField.setEditable(true);
-        jPanel.add(pctTextField);
+        perCapToTrade.setEditable(true);
+        jPanel.add(perCapToTrade);
         jPanel.add(new JSeparator());
         jPanel.add(new JLabel("Percentage Capital Traded"));
-        JTextField pcrTextField = new JTextField("2354643.33");
-        pcrTextField.setEditable(false);
-        jPanel.add(pcrTextField);
+        perCapTraded.setEditable(false);
+        jPanel.add(perCapTraded);
         return jPanel;
     }
 
@@ -281,6 +294,46 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
             int clientId = Integer.parseInt( m_clientId.getText() );
             m_controller.connect( m_host.getText(), port, clientId);
         }
+    }
+
+    public JTextField getAccountNetLiq() {
+        return accountNetLiq;
+    }
+
+    public void setAccountNetLiq(JTextField accountNetLiq) {
+        this.accountNetLiq = accountNetLiq;
+    }
+
+    public JTextField getTotalNetLiq() {
+        return totalNetLiq;
+    }
+
+    public void setTotalNetLiq(JTextField totalNetLiq) {
+        this.totalNetLiq = totalNetLiq;
+    }
+
+    public JTextField getTotalInitMarg() {
+        return totalInitMarg;
+    }
+
+    public void setTotalInitMarg(JTextField totalInitMarg) {
+        this.totalInitMarg = totalInitMarg;
+    }
+
+    public JTextField getPerCapToTrade() {
+        return perCapToTrade;
+    }
+
+    public void setPerCapToTrade(JTextField perCapToTrade) {
+        this.perCapToTrade = perCapToTrade;
+    }
+
+    public JTextField getPerCapTraded() {
+        return perCapTraded;
+    }
+
+    public void setPerCapTraded(JTextField perCapTraded) {
+        this.perCapTraded = perCapTraded;
     }
 
     private static class Logger implements ApiConnection.ILogger {

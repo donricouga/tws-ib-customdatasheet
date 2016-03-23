@@ -3,6 +3,7 @@ package ca.riveros.ib.ui;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -48,6 +49,12 @@ public class Util {
         }
         table.revalidate();
         table.repaint();
+    }
+
+    public static String formatNumber(String number) {
+        Double n = Double.parseDouble(number);
+        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        return formatter.format(n);
     }
 
     /** Configure dialog to close when Esc is pressed. */

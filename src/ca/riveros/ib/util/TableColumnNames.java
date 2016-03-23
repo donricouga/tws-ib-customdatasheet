@@ -17,31 +17,29 @@ public enum TableColumnNames {
     MARKETVALUE(3,"Market Value"),
     UNREALIZEDDPNL(4,"Unrealized PNL"),
     REALIZEDPNL(5,"Realized PNL"),
-    ACCOUNTNAME(6, "Account Name"),
-    AVGCOST(7,"Average Cost"),
-    BIDPRICE(8,"Bid Price"),  //Hide This Column
-    ASKPRICE(9,"Ask Price"),  //Hide This Column
-    MID(10,"Mid"), //CHANGE NUMBERS
-    MARGININITCHG(11,"Margin Initial Change"),
-    NETLIQ(12,"Net Liq"), //Hide This Column
-    POSPERNETLIQ(13,"Position % of NetLiq"),
-    TARGETPROFITPER(14, "Target Profit %"),  //editable
-    TARGETLOSSPER(15, "Target Loss %"), //editable
-    CLOSINGPOSFORPROFIT(16, "Closing Position for Profit"),
-    CLOSINGPOSFORLOSS(17, "Closing Position for Loss"),
-    PLPERCENTAGE(18,"P/L%"),
-    DELTA(19, "Delta"),
-    IMPVOL(20, "ImpVol %"),
-    PROBOFPROFIT(21, "Probability of Profit"),
-    EDGE(22, "Edge"), //editable
-    KCLOSSLEVEL(23, "KC Loss Level"),
-    TAKEPROFITSAT(24, "Take Profits At"),
-    NETPROFIT(25, "Net Profit"),
-    TAKELOSSAT(26, "Take Loss at"),
-    NETLOSS(27, "Net Loss"),
-    PERPORTFOLIOPERTRADE(28,"% of Portfolio per trade"),  //editable
-    AMOUNTMAXLOSS(29, "Amount of max loss"),
-    NUMCONTRACTSTRADE(30, "Number of Contracts to Trade");
+    AVGCOST(6,"Average Cost"),
+    BIDPRICE(7,"Bid Price"),  //Hide This Column
+    ASKPRICE(8,"Ask Price"),  //Hide This Column
+    MID(9,"Mid"), //CHANGE NUMBERS
+    MARGININITCHG(10,"Margin Initial Change"),
+    POSPERNETLIQ(11,"Position % of NetLiq"),
+    TARGETPROFITPER(12, "Target Profit %"),  //editable
+    TARGETLOSSPER(13, "Target Loss %"), //editable
+    CLOSINGPOSFORPROFIT(14, "Closing Position for Profit"),
+    CLOSINGPOSFORLOSS(15, "Closing Position for Loss"),
+    PLPERCENTAGE(16,"P/L%"),
+    DELTA(17, "Delta"),
+    IMPVOL(18, "ImpVol %"),
+    PROBOFPROFIT(19, "Probability of Profit"),
+    EDGE(20, "Edge"), //editable
+    KCLOSSLEVEL(21, "KC Loss Level"),
+    TAKEPROFITSAT(22, "Take Profits At"),
+    NETPROFIT(23, "Net Profit"),
+    TAKELOSSAT(24, "Take Loss at"),
+    NETLOSS(25, "Net Loss"),
+    PERPORTFOLIOPERTRADE(26,"% of Portfolio per trade"),  //editable
+    AMOUNTMAXLOSS(27, "Amount of max loss"),
+    NUMCONTRACTSTRADE(28, "Number of Contracts to Trade");
 
 
 

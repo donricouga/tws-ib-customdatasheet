@@ -1,7 +1,9 @@
 package ca.riveros.ib.ui;
 
+import ca.riveros.ib.actions.MktDataHandler;
 import ca.riveros.ib.data.AccountSummaryValues;
 import ca.riveros.ib.util.TableColumnNames;
+import com.ib.controller.NewContract;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
@@ -15,14 +17,14 @@ public class IBTableModel extends DefaultTableModel {
     /** Currently Selected Account Code **/
     private String selectedAcctCode = null;
 
-    /** Temporary to Hold NetLiq **/
-    private Double netLiq = null;
-
     /** Temporary to Hold Init Margin Request **/
     private Double initMarginReq = null;
 
     /** Indexes the data by ContractID --> Index in the Model **/
     ConcurrentHashMap <Integer,Integer>dataMap = new ConcurrentHashMap<Integer, Integer>(200);
+
+    /** Maintains a list of MktDataHandler --> Row Indexes used in the current view for a particular account **/
+    private ConcurrentHashMap <MktDataHandler, Integer>mkDataHandlersMap = new ConcurrentHashMap<MktDataHandler, Integer>(100);
 
     /**
      * When Updating Account Data, we can use this method to find the index in the GUI and then simply update
@@ -39,28 +41,38 @@ public class IBTableModel extends DefaultTableModel {
      * Adds or updates a row in the model. Needs to be called in the Swing Event Dispatcher Thread.
      * @param vector
      */
-    public void addOrUpdateRow(Vector vector) {
-
-        //Add to DataMap
-        Integer contractId = (Integer) vector.get(TableColumnNames.getIndexByName("Contract"));
+    public void addOrUpdateRow(NewContract newContract, Vector vector) {
 
         //Case Insert a brand new Row!
+        int contractId = newContract.conid();
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
             System.out.println("INSERTING --> " + vector);
             //have to get NetLiq and InitMarginReq from fields above since updatePortfolio() runs after accountValue()
             vector.set(TableColumnNames.getIndexByName("Margin Initial Change"), initMarginReq);
-            vector.set(TableColumnNames.getIndexByName("Net Liq"), netLiq);
+            //vector.set(TableColumnNames.getIndexByName("Net Liq"), netLiq);
 
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
+
+            //Also Request Top Market Data to get Bid Price + Ask Price
+            MktDataHandler handler = new MktDataHandler();
+            mkDataHandlersMap.put(handler, getRowCount() - 1);
+
+            /*NewContract nc = new NewContract();
+            nc.symbol(newContract.symbol());
+            nc.exchange("SMART");
+            nc.currency(newContract.currency());
+            nc.secType(newContract.secType());
+            nc.localSymbol(newContract.localSymbol());*/
+            newContract.exchange("SMART");
+            IBCustomTable.INSTANCE.controller().reqOptionMktData(newContract, "", false, handler);
         }
         else {
             System.out.println("UPDATING --> " + vector);
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
-                    System.out.println("Setting " + o + " At " + rowIndex + " Column " + i);
                     super.setValueAt(o, rowIndex, i);
                 }
             }
@@ -78,24 +90,30 @@ public class IBTableModel extends DefaultTableModel {
     public void resetModel(String accountCode) {
         dataMap.clear();
         initMarginReq = null;
-        netLiq = null;
         int rowCount = getRowCount();
         for (int i = 0; i < rowCount; i++) {
             removeRow(0);
         }
         selectedAcctCode = accountCode;
+
+        //Cancel MktData for this selected Account
+        Enumeration<MktDataHandler> handlersEnum = mkDataHandlersMap.keys();
+        while(handlersEnum.hasMoreElements()) {
+            IBCustomTable.INSTANCE.controller().cancelTopMktData(handlersEnum.nextElement());
+        }
+    }
+
+    @Override
+    public Class getColumnClass(int column) {
+        int colIndex = TableColumnNames.getIndexByName("Contract");
+        if(column == colIndex)
+            return String.class;
+        else
+            return Double.class;
     }
 
     public String getSelectedAcctCode() {
         return selectedAcctCode;
-    }
-
-    public Double getNetLiq() {
-        return netLiq;
-    }
-
-    public void setNetLiq(Double netLiq) {
-        this.netLiq = netLiq;
     }
 
     public Double getInitMarginReq() {
@@ -104,5 +122,13 @@ public class IBTableModel extends DefaultTableModel {
 
     public void setInitMarginReq(Double initMarginReq) {
         this.initMarginReq = initMarginReq;
+    }
+
+    public ConcurrentHashMap<MktDataHandler, Integer> getMkDataHandlersMap() {
+        return mkDataHandlersMap;
+    }
+
+    public void setMkDataHandlersMap(ConcurrentHashMap<MktDataHandler, Integer> mkDataHandlersMap) {
+        this.mkDataHandlersMap = mkDataHandlersMap;
     }
 }

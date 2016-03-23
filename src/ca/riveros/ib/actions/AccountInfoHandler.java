@@ -2,11 +2,21 @@ package ca.riveros.ib.actions;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
+import ca.riveros.ib.ui.Util;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.ApiController;
+import com.ib.controller.NewContract;
 import com.ib.controller.Position;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 
@@ -38,11 +48,13 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
 
         }
         else if(NET_LIQUIDATION.equals(key)) {
-            System.out.println("Received NetLiquidation " + value + " for account " + account);
-            if(model.getRowCount() == 0)
-                model.setNetLiq(Double.valueOf(value));
-            else
-                model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Net Liq"));
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JTextField tf = IBCustomTable.INSTANCE.getAccountNetLiq();
+                    tf.setText(Util.formatNumber(value));
+                }
+            });
         }
     }
 
@@ -58,7 +70,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
 
     @Override
     public void updatePortfolio(Position position) {
-        /*System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
+        System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
         System.out.println("CONTRACT : " + position.contract().toString());
         System.out.println("POSITION : " + position.position());
         System.out.println("MARKET PRICE : " + position.marketPrice());
@@ -67,10 +79,9 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("REALIZED PNL : " + position.realPnl());
         System.out.println("UNREALIZED PNL : " + position.unrealPnl());
         System.out.println("ACCOUNT : " + position.account());
-        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
+        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");
         //System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
-
 
     }
 
@@ -82,19 +93,53 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             this.position = position;
         }
 
+        /** Generates user friendly contract name **/
+        private String generateContractName(NewContract contract) {
+            String symbol = contract.symbol();
+            String secType = contract.secType().getApiString();
+            String tradingClass = contract.tradingClass();
+            String expiry = contract.expiry();
+            Double strike = contract.strike();
+            String right = contract.right().getApiString(); //"None" is default
+            String exchange = contract.exchange();
+
+            if(expiry != null && !expiry.isEmpty()) {
+                try {
+                    DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
+                    DateFormat targetFormat = new SimpleDateFormat("MMMdd''yy");
+                    Date date = originalFormat.parse(expiry);
+                    expiry = targetFormat.format(date);
+                }catch (ParseException pe) {
+                    pe.printStackTrace();
+                }
+            } else {
+                expiry = "";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(symbol).append(" ").append(secType).append(" (").append(tradingClass).append(") ")
+                    .append(expiry).append(" ");
+            if(strike != 0.0)
+                sb.append(strike).append(" ");
+            if(!"None".equals(right))
+                sb.append(right).append(" ");
+            sb.append("@").append(exchange);
+
+            return sb.toString();
+
+        }
+
         @Override
         public void run() {
             Vector v = new Vector(TableColumnNames.getNames().length);
-            v.add(position.conid());
+            v.add(generateContractName(position.contract()));
             v.add(position.position());
             v.add(position.marketPrice());
             v.add(position.marketValue());
             v.add(position.unrealPnl());
             v.add(position.realPnl());
-            v.add(position.account());
             v.add(position.averageCost());
             v.add(null); // Bid Price
-            v.add(null);
             v.add(null);
             v.add(null); //Margin Initial Change
             v.add(null);
@@ -116,7 +161,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(null);
             v.add(null);
             v.add(null); // Number of Contracts To Trade
-            model.addOrUpdateRow(v);
+            model.addOrUpdateRow(position.contract(), v);
         }
     }
 }
