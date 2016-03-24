@@ -2,13 +2,14 @@ package ca.riveros.ib.ui;
 
 import ca.riveros.ib.actions.ContractDetailsHandler;
 import ca.riveros.ib.actions.MktDataHandler;
-import ca.riveros.ib.data.AccountSummaryValues;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.NewContract;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static ca.riveros.ib.ui.IBCustomTable.LOG_ERRORS_ONLY;
 
 /**
  * Created by rriveros on 3/20/16.
@@ -58,6 +59,9 @@ public class IBTableModel extends DefaultTableModel {
 
             //Request Contract Details
             newContract.exchange("");  //For Some Reason the API Controller API populates this when it shouldn't be
+
+            if(!LOG_ERRORS_ONLY)
+                IBCustomTable.INSTANCE.showOut("Requesting Contract Details for contract \n" + newContract);
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
         }
         else {

@@ -9,10 +9,6 @@ import com.ib.controller.NewContract;
 import com.ib.controller.Position;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
-import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.AffineTransform;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,7 +76,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("UNREALIZED PNL : " + position.unrealPnl());
         System.out.println("ACCOUNT : " + position.account());
         System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
-        System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
+        IBCustomTable.INSTANCE.showIn("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
 
     }

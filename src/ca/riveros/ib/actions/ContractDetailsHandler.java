@@ -2,10 +2,13 @@ package ca.riveros.ib.actions;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
+import com.ib.controller.ApiConnection;
 import com.ib.controller.ApiController;
 import com.ib.controller.NewContractDetails;
 
 import java.util.ArrayList;
+
+import static ca.riveros.ib.ui.IBCustomTable.LOG_ERRORS_ONLY;
 
 /**
  * Created by rriveros on 3/23/16.
@@ -30,7 +33,11 @@ public class ContractDetailsHandler implements ApiController.IContractDetailsHan
 
         //Now Request Mkt Data when there is a valid new Contract
         MktDataHandler handler = new MktDataHandler();
-        System.out.println("ABOUT TO CALL MKT DATA USING HANDLER " + handler.getHandlerId() + " WITH CONTRACT ID " + contractId);
+        if(!LOG_ERRORS_ONLY) {
+            IBCustomTable.INSTANCE.showIn("-------------- Contract Details -------------------");
+            IBCustomTable.INSTANCE.showIn(list.get(0).contract().toString());
+            IBCustomTable.INSTANCE.showIn("Now Requesting Market Data with that contract ...");
+        }
         model.getMkDataHandlersMap().put(handler, contractId);
         IBCustomTable.INSTANCE.controller().reqOptionMktData(list.get(0).contract(), "", false, handler);
     }

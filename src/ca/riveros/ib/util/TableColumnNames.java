@@ -71,7 +71,6 @@ public enum TableColumnNames {
         nonEditableCellsList.remove(getIndexByName("Target Loss %"));
         nonEditableCellsList.remove(getIndexByName("Edge"));
         nonEditableCellsList.remove(getIndexByName("% of Portfolio per trade"));
-        System.out.println("NON EDITABLE CELLS \n" + nonEditableCellsList);
     }
 
     /*public static TableColumnNames fromIndex(int colIndex) {

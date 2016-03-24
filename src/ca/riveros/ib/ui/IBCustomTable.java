@@ -25,6 +25,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
     private ApiController m_controller;
     public static IBCustomTable INSTANCE = new IBCustomTable();
+    public static Boolean LOG_ERRORS_ONLY = false;
     public IBTableModel model;
 
     /** Logging to the GUI **/
@@ -36,7 +37,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     public ApiConnection.ILogger getOutLogger()           { return m_outLogger; }
 
     /** Info GUI **/
-    private final JTextArea m_msg = new JTextArea();
     private final ConnectionPanel m_connectionPanel = new ConnectionPanel();
     private DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
     private JTextField accountNetLiq = new JTextField("0.0",8);
@@ -44,6 +44,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     private JTextField totalInitMarg = new JTextField("0.0",8);
     private JTextField perCapToTrade = new JTextField("     ",3);
     private JTextField perCapTraded = new JTextField("0.0",3);
+    private JTextArea m_msg = new JTextArea();
 
     /** DATA **/
     private final ArrayList<String> m_acctList = new ArrayList<String>();
@@ -104,6 +105,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Create JSplitPane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, comboBox, INSTANCE.createTotalStats());
         cp.add(splitPane, BorderLayout.NORTH);
+
+        //Add Logging Data
+        cp.add(createMessageTextArea(), BorderLayout.SOUTH);
 
         JScrollPane pane = new JScrollPane(table);
         frame.add(pane, BorderLayout.CENTER);
@@ -203,6 +207,32 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         });
     }
 
+    public void showIn( final String str) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                m_inLog.append(str);
+                m_inLog.append("\n\n");
+
+                Dimension d = m_inLog.getSize();
+                m_inLog.scrollRectToVisible(new Rectangle(0, d.height, 1, 1));
+            }
+        });
+    }
+
+    public void showOut( final String str) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                m_outLog.append(str);
+                m_outLog.append("\n\n");
+
+                Dimension d = m_msg.getSize();
+                m_outLog.scrollRectToVisible(new Rectangle(0, d.height, 1, 1));
+            }
+        });
+    }
+
     private IBTableModel createTableModel() {
         IBTableModel model = new IBTableModel() {
             @Override
@@ -244,6 +274,26 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         perCapTraded.setEditable(false);
         jPanel.add(perCapTraded);
         return jPanel;
+    }
+
+    public NewTabbedPanel createMessageTextArea() {
+
+        m_msg.setEditable( false);
+        m_msg.setLineWrap( true);
+        JScrollPane msgScroll = new JScrollPane( m_msg);
+        msgScroll.setPreferredSize( new Dimension( 10000, 120) );
+
+        JScrollPane outLogScroll = new JScrollPane( m_outLog);
+        outLogScroll.setPreferredSize( new Dimension( 10000, 120) );
+
+        JScrollPane inLogScroll = new JScrollPane( m_inLog);
+        inLogScroll.setPreferredSize( new Dimension( 10000, 120) );
+
+        NewTabbedPanel bot = new NewTabbedPanel();
+        bot.addTab( "Messages", msgScroll);
+        bot.addTab( "Log (out)", outLogScroll);
+        bot.addTab( "Log (in)", inLogScroll);
+        return bot;
     }
 
 
