@@ -17,6 +17,7 @@ public class Test implements EWrapper
     private EClientSocket client = null;
 
     private int tickerId = 0;
+    private int summaryId = 0;
 
     private List<String> keyNames = new ArrayList<String>(100);
 
@@ -43,7 +44,17 @@ public class Test implements EWrapper
         //Call Request Account Updates
         String []accountNames ={"DF276965","DU276966","DU276967","DU276968","DU276969","DU276970"};
 
-        client.reqAccountUpdates(true, "DU276966");
+        client.reqAccountUpdates(true, "DU276968");
+
+        /*StringBuilder sb = new StringBuilder();
+        for (AccountSummaryTag tag : AccountSummaryTag.values()) {
+            if (sb.length() > 0) {
+                sb.append( ',');
+            }
+            sb.append( tag);
+        }
+
+        client.reqAccountSummary(summaryId, "All", sb.toString());*/
 
 
     }
@@ -53,23 +64,13 @@ public class Test implements EWrapper
 
     }
 
-    public String accountTagValues() {
-        StringBuffer sb = new StringBuffer();
-        AccountSummaryTag [] accountSummaryTagsArray = AccountSummaryTag.values();
-        for(AccountSummaryTag tag : accountSummaryTagsArray) {
-            sb.append(tag.name()).append(",");
-        }
-        String str =  sb.toString();
-        return str.substring(0, str.length()-1);
-    }
-
 
     @Override public void bondContractDetails(int reqId, ContractDetails contractDetails){}
     @Override public void contractDetails(int reqId, ContractDetails contractDetails) {
         System.out.println("------------------ Contract Details -----------------");
         System.out.println("Symbol : " + contractDetails.m_summary.m_symbol);
-        System.out.println("VALID EXCHANGE " + contractDetails.m_summary.m_exchange);
-        System.out.println("Contract Id " + contractDetails.m_underConId);
+        System.out.println("Exchange " + contractDetails.m_summary.m_exchange);
+        System.out.println("Contract Id " + contractDetails.m_summary.m_conId);
         if (contractDetails == null) {
             System.out.println("NO CONTRACT DETAILS FOR REQID " + reqId);
             return;
@@ -94,12 +95,15 @@ public class Test implements EWrapper
         System.out.println("Received Managed Accounts " + accountsList);
     }
     @Override public void commissionReport(CommissionReport cr){}
-    @Override public void position(String account, Contract contract, int pos, double avgCost){}
+    @Override public void position(String account, Contract contract, int pos, double avgCost){
+        System.out.println("POSITION --> ACCOUNT : " + account + " Contract " + contract + " POS " + pos + " AvgCost " + avgCost);
+    }
+
     @Override public void positionEnd(){}
 
     @Override public void accountSummary(int reqId, String account, String tag, String value, String currency)
     {
-        System.out.println("Received Account Summary for " + account);
+        System.out.println("Received Account Summary for " + account + " TAG " + tag + " Value " + value);
     }
 
     @Override public void accountSummaryEnd(int reqId){}
@@ -110,7 +114,9 @@ public class Test implements EWrapper
     @Override public void orderStatus(int orderId, String status, int filled,
                                       int remaining, double avgFillPrice, int permId, int parentId,
                                       double lastFillPrice, int clientId, String whyHeld){}
-    @Override public void receiveFA(int faDataType, String xml){}
+    @Override public void receiveFA(int faDataType, String xml){
+        System.out.println("RECEIVED FA ....\n" + xml);
+    }
     @Override public void scannerData(int reqId, int rank,
                                       ContractDetails contractDetails, String distance, String benchmark,
                                       String projection, String legsStr){}
@@ -152,7 +158,8 @@ public class Test implements EWrapper
         System.out.println("ACCOUNT : " + accountName);
         System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
         System.out.println("SYMBOL : " + contract.m_symbol + " CONTRACT : " + contract.m_conId + " ACCOUNT " + accountName + " AT EXCHANGE " + contract.m_exchange);
-        client.reqContractDetails(tickerId, contract);
+        int temp = tickerId;
+        client.reqContractDetails(temp, contract);
         tickerId++;
 
 
@@ -192,10 +199,11 @@ public class Test implements EWrapper
     }
 
     @Override public void tickPrice(int orderId, int field, double price,int canAutoExecute)
-    {   System.out.println("Ticker ID " + orderId + " FIELD " + field + " PRICE " + price);
+    {
 
         if(TickType.BID == field || TickType.ASK == field)
-            System.out.println("Ticker ID " + orderId + " FIELD " + field + " PRICE " + price);
+            System.out.println("Ticker ID " + orderId + " FIELD " + field + " PRICE " + price );
+
     }
 
     @Override public void tickSize (int orderId, int field, int size){
@@ -219,7 +227,8 @@ public class Test implements EWrapper
                                                  double pvDividend, double gamma, double vega,
                                                  double theta, double undPrice)
     {
-        //System.out.println("TICKER ID : " +tickerId);System.out.println("Field : " + field);
+        if(TickType.BID == field || TickType.ASK == field)
+            System.out.println("Ticker ID " + tickerId + " FIELD " + field + " PRICE " + undPrice + " Delta " + delta);
     }
 
 

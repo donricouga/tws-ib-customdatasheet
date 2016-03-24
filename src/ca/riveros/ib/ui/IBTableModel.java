@@ -24,7 +24,7 @@ public class IBTableModel extends DefaultTableModel {
     /** Indexes the data by ContractID --> Index in the Model **/
     ConcurrentHashMap <Integer,Integer>dataMap = new ConcurrentHashMap<Integer, Integer>(200);
 
-    /** Maintains a list of MktDataHandler --> Row Indexes used in the current view for a particular account **/
+    /** Maintains a list of MktDataHandler --> Contract used in the current view for a particular account **/
     private ConcurrentHashMap <MktDataHandler, Integer>mkDataHandlersMap = new ConcurrentHashMap<MktDataHandler, Integer>(100);
 
     /**
@@ -48,7 +48,7 @@ public class IBTableModel extends DefaultTableModel {
         int contractId = newContract.conid();
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
-            System.out.println("INSERTING --> " + vector);
+            System.out.println("INSERTING NEW ROW");
             //have to get NetLiq and InitMarginReq from fields above since updatePortfolio() runs after accountValue()
             vector.set(TableColumnNames.getIndexByName("Margin Initial Change"), initMarginReq);
             //vector.set(TableColumnNames.getIndexByName("Net Liq"), netLiq);
@@ -57,10 +57,11 @@ public class IBTableModel extends DefaultTableModel {
             super.addRow(vector);
 
             //Request Contract Details
+            newContract.exchange("");  //For Some Reason the API Controller API populates this when it shouldn't be
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
         }
         else {
-            System.out.println("UPDATING --> " + vector);
+            System.out.println("UPDATING ROW");
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
@@ -113,6 +114,14 @@ public class IBTableModel extends DefaultTableModel {
 
     public void setInitMarginReq(Double initMarginReq) {
         this.initMarginReq = initMarginReq;
+    }
+
+    public ConcurrentHashMap<Integer, Integer> getDataMap() {
+        return dataMap;
+    }
+
+    public void setDataMap(ConcurrentHashMap<Integer, Integer> dataMap) {
+        this.dataMap = dataMap;
     }
 
     public ConcurrentHashMap<MktDataHandler, Integer> getMkDataHandlersMap() {

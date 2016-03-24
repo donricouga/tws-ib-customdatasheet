@@ -70,7 +70,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
 
     @Override
     public void updatePortfolio(Position position) {
-        System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
+        /*System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
         System.out.println("CONTRACT : " + position.contract().toString());
         System.out.println("POSITION : " + position.position());
         System.out.println("MARKET PRICE : " + position.marketPrice());
@@ -79,8 +79,8 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("REALIZED PNL : " + position.realPnl());
         System.out.println("UNREALIZED PNL : " + position.unrealPnl());
         System.out.println("ACCOUNT : " + position.account());
-        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");
-        //System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
+        System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
+        System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
 
     }

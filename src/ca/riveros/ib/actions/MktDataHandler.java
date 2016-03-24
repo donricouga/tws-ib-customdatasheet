@@ -26,7 +26,8 @@ public class MktDataHandler implements ApiController.IOptHandler {
                 public void run() {
                     IBTableModel model = IBCustomTable.INSTANCE.getModel();
                     String idxName = BID_PRICE.equals(tickType.name()) ? "Bid Price" : "Ask Price";
-                    Integer row = model.getMkDataHandlersMap().get(MktDataHandler.this);
+                    Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
+                    Integer row = model.getDataMap().get(contractId);
                     model.setValueAt(price, row , TableColumnNames.getIndexByName(idxName));
 
                     //also set mid
