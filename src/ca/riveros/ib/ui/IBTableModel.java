@@ -1,5 +1,6 @@
 package ca.riveros.ib.ui;
 
+import ca.riveros.ib.actions.ContractDetailsHandler;
 import ca.riveros.ib.actions.MktDataHandler;
 import ca.riveros.ib.data.AccountSummaryValues;
 import ca.riveros.ib.util.TableColumnNames;
@@ -55,18 +56,8 @@ public class IBTableModel extends DefaultTableModel {
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
 
-            //Also Request Top Market Data to get Bid Price + Ask Price
-            MktDataHandler handler = new MktDataHandler();
-            mkDataHandlersMap.put(handler, getRowCount() - 1);
-
-            /*NewContract nc = new NewContract();
-            nc.symbol(newContract.symbol());
-            nc.exchange("SMART");
-            nc.currency(newContract.currency());
-            nc.secType(newContract.secType());
-            nc.localSymbol(newContract.localSymbol());*/
-            newContract.exchange("SMART");
-            IBCustomTable.INSTANCE.controller().reqOptionMktData(newContract, "", false, handler);
+            //Request Contract Details
+            IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
         }
         else {
             System.out.println("UPDATING --> " + vector);
