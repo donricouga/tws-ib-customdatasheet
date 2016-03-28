@@ -35,7 +35,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
      */
     @Override
     public void accountValue(String account, String key, String value, String currency) {
-        if(INIT_MARGIN_REQ.equals(key)) {
+        /*if(INIT_MARGIN_REQ.equals(key)) {
             System.out.println("Received InitMarginReq " + value + " for account " + account);
             if(model.getRowCount() == 0)
                 model.setInitMarginReq(Double.valueOf(value));
@@ -43,7 +43,8 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
                 model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Margin Initial Change"));
 
         }
-        else if(NET_LIQUIDATION.equals(key)) {
+        else */
+        if(NET_LIQUIDATION.equals(key)) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {

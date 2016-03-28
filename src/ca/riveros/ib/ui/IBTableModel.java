@@ -5,7 +5,9 @@ import ca.riveros.ib.actions.MktDataHandler;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.NewContract;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -83,20 +85,30 @@ public class IBTableModel extends DefaultTableModel {
         }
     }
 
+    /**
+     * Resets the model for another account. Will cause everything to wait for this operation to finish.
+     * @param accountCode
+     */
     public void resetModel(String accountCode) {
-        dataMap.clear();
-        initMarginReq = null;
-        int rowCount = getRowCount();
-        for (int i = 0; i < rowCount; i++) {
-            removeRow(0);
-        }
-        selectedAcctCode = accountCode;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                dataMap.clear();
+                initMarginReq = null;
+                int rowCount = getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    removeRow(0);
+                }
+                selectedAcctCode = accountCode;
 
-        //Cancel MktData for this selected Account
-        Enumeration<MktDataHandler> handlersEnum = mkDataHandlersMap.keys();
-        while(handlersEnum.hasMoreElements()) {
-            IBCustomTable.INSTANCE.controller().cancelTopMktData(handlersEnum.nextElement());
-        }
+                //Cancel MktData for this selected Account
+                Enumeration<MktDataHandler> handlersEnum = mkDataHandlersMap.keys();
+                while(handlersEnum.hasMoreElements()) {
+                    IBCustomTable.INSTANCE.controller().cancelTopMktData(handlersEnum.nextElement());
+                }
+            }
+        });
+
     }
 
     @Override
@@ -106,6 +118,27 @@ public class IBTableModel extends DefaultTableModel {
             return String.class;
         else
             return Double.class;
+    }
+
+    /**
+     * @param row
+     * @param col
+     * @return
+     */
+    @Override
+    public Object getValueAt(int row, int col) {
+        Object o = super.getValueAt(row,col);
+        if(o != null)
+            return o;
+        else {
+            Class columnClass = getColumnClass(col);
+            if("java.lang.Double".equals(columnClass.getName()))
+                return new Double(0.0);
+            if("java.lang.String".equals(columnClass.getName()))
+                return "";
+            return o;
+        }
+
     }
 
     public String getSelectedAcctCode() {

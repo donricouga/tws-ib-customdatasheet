@@ -4,6 +4,9 @@ import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -55,6 +58,16 @@ public class Util {
         Double n = Double.parseDouble(number);
         DecimalFormat formatter = new DecimalFormat("#,###.00");
         return formatter.format(n);
+    }
+
+    public static Double formatString(String number) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        try {
+            return nf.parse(number).doubleValue();
+        } catch(ParseException pe) {
+            pe.printStackTrace();
+            return 0.0;
+        }
     }
 
     /** Configure dialog to close when Esc is pressed. */

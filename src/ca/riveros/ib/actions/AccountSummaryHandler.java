@@ -18,7 +18,6 @@ public class AccountSummaryHandler implements ApiController.IAccountSummaryHandl
 
     @Override
     public void accountSummary(String account, AccountSummaryTag tag, String value, String currency) {
-        System.out.println("COMPARING " + account + " TO MODEL SELECTED VALUE " + model.getSelectedAcctCode());
         if(account.equals(model.getSelectedAcctCode())) {
             if ("InitMarginReq".equals(tag.name())) {
                 System.out.println("ACCOUNT : " + account + " TAG : " + tag + " VALUE : " + value);

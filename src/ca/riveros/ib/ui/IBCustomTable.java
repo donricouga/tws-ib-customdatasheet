@@ -2,6 +2,7 @@ package ca.riveros.ib.ui;
 
 import ca.riveros.ib.actions.AccountInfoHandler;
 import ca.riveros.ib.actions.AccountSummaryHandler;
+import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.*;
 
@@ -66,15 +67,11 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Create the JTable with the Default TableModel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JTable table = new JTable(model);
+
+        //Add Cell Renderers
+        table.getColumnModel().getColumn(TableColumnNames.getIndexByName("Closing Position for Profit")).setCellRenderer(new ClosingPosForProfRenderer());
+
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setBackground(row % 2 == 0 ? Color.LIGHT_GRAY : Color.WHITE);
-                return this;
-            }
-        });
         RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         table.setRowSorter(sorter);
 
@@ -248,7 +245,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
             model.addColumn(name);
         }
         //Add Listener to model
-        //model.addTableModelListener(new RTTableListener());
+        model.addTableModelListener(new IBTableModelListener());
         return model;
     }
 

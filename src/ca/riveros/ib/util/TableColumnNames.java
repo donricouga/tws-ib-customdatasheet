@@ -67,10 +67,12 @@ public enum TableColumnNames {
         for(int i = 0; i < NAMES.size(); i++) {
             nonEditableCellsList.add(i);
         }
+        nonEditableCellsList.remove(getIndexByName("Margin Initial Change"));
         nonEditableCellsList.remove(getIndexByName("Target Profit %"));
         nonEditableCellsList.remove(getIndexByName("Target Loss %"));
         nonEditableCellsList.remove(getIndexByName("Edge"));
         nonEditableCellsList.remove(getIndexByName("% of Portfolio per trade"));
+        nonEditableCellsList.remove(getIndexByName("Probability of Profit"));
     }
 
     /*public static TableColumnNames fromIndex(int colIndex) {

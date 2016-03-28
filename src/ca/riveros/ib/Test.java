@@ -60,8 +60,11 @@ public class Test implements EWrapper
     }
 
     public static void main(String []args) {
-        new Test();
-
+        //new Test();
+        Double a = new Double(3.3);
+        Class c = a.getClass();
+        System.out.println(c.getName());
+        System.out.println(c.getName().equals("java.lang.Double"));
     }
 
 

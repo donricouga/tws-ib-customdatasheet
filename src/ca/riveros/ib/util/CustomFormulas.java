@@ -11,12 +11,12 @@ public class CustomFormulas {
         return marginInitialChange / netLiq;
     }
 
-    public static double calcPerForProfitLoss(double avgCost, double mid) {
+    public static double calcClosingPositionForProfit(double avgCost, double mid) {
         if(avgCost > 0) {
-            return (avgCost - mid) / avgCost;
+            return (mid - avgCost) / avgCost;
         }
         else if(avgCost < 0) {
-            return (mid - avgCost) / avgCost;
+            return (avgCost - mid) / avgCost;
         }
         else {
             return 0;
