@@ -28,8 +28,8 @@ public final class PersistentFields {
         }
     }
 
-    public static Double getValue(String account, int contractId) {
-        String key = account + "." + contractId;
+    public static Double getValue(String account, int contractId, int col) {
+        String key = account + "." + contractId + "." + col;
         Object o = properties.get(key);
         if(o == null)
             return null;
@@ -37,11 +37,21 @@ public final class PersistentFields {
             return Double.valueOf((String) o);
     }
 
-    public static void setValue(String account, int contractId, Double value) {
-        properties.setProperty(account + "." + contractId, value.toString());
+    public static void setValue(String account, int contractId, int col, Double value) {
+        properties.setProperty(account + "." + contractId + "." + col, value.toString());
         try {
             out = new FileOutputStream(file);
             properties.store(out, "");
+            out.close();
+        }catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public static void clearProperties() {
+        try {
+            out = new FileOutputStream(file);
+            properties.clear();
             out.close();
         }catch(IOException ioe) {
             ioe.printStackTrace();

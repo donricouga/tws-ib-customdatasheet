@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ca.riveros.ib.ui.IBCustomTable.LOG_ERRORS_ONLY;
 
+import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+
 /**
  * Created by rriveros on 3/20/16.
  */
@@ -51,7 +53,7 @@ public class IBTableModel extends DefaultTableModel {
         int contractId = newContract.conid();
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
-            System.out.println("INSERTING NEW ROW");
+            System.out.println("INSERTING NEW ROW -> " + vector);
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
 
@@ -61,6 +63,9 @@ public class IBTableModel extends DefaultTableModel {
             if(!LOG_ERRORS_ONLY)
                 IBCustomTable.INSTANCE.showOut("Requesting Contract Details for contract \n" + newContract);
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
+
+            //Fire Events for persistent fields.
+            //fireUpdatedPersistentFields(vector, getRowCount() - 1);
         }
         else {
             System.out.println("UPDATING ROW");
@@ -74,7 +79,6 @@ public class IBTableModel extends DefaultTableModel {
 
     }
     
-
     /**
      * Resets the model for another account. Will cause everything to wait for this operation to finish.
      * @param accountCode

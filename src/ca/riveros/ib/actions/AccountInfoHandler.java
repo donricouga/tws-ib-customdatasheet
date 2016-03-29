@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+
 
 public class AccountInfoHandler implements ApiController.IAccountHandler {
 
@@ -140,23 +142,23 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(null); // Bid Price
             v.add(null); //Ask Price
             v.add(null); //Mid
-            v.add(PersistentFields.getValue(position.account(), position.conid())); //Margin Initial Change
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Margin Initial Change")));
             v.add(null); //Position % of Net Liq
-            v.add(null); //Target Profit
-            v.add(null); //Target Loss
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Profit %")));
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Loss %")));
             v.add(null); //Closing Position for Profit
             v.add(null); //Closing Position for Loss
             v.add(null); //P&L
             v.add(null); //Delta
             v.add(null); //ImpVol
-            v.add(null); //Prob of Profit
-            v.add(null); //Edge
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Probability of Profit")));
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Edge")));
             v.add(null); //KC Loss Level
             v.add(null);
             v.add(null);
             v.add(null);
             v.add(null);
-            v.add(null);
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("% of Portfolio per trade")));
             v.add(null); //Amount of Max Loss
             v.add(null); // Number of Contracts To Trade
             v.add(position.conid());
