@@ -1,5 +1,6 @@
 package ca.riveros.ib.actions;
 
+import ca.riveros.ib.data.PersistentFields;
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
 import ca.riveros.ib.ui.Util;
@@ -137,27 +138,28 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(position.realPnl());
             v.add(position.averageCost());
             v.add(null); // Bid Price
-            v.add(null);
-            v.add(null); //Margin Initial Change
-            v.add(null);
-            v.add(null);
+            v.add(null); //Ask Price
+            v.add(null); //Mid
+            v.add(PersistentFields.getValue(position.account(), position.conid())); //Margin Initial Change
+            v.add(null); //Position % of Net Liq
             v.add(null); //Target Profit
-            v.add(null);
-            v.add(null);
+            v.add(null); //Target Loss
+            v.add(null); //Closing Position for Profit
             v.add(null); //Closing Position for Loss
-            v.add(null);
+            v.add(null); //P&L
             v.add(null); //Delta
-            v.add(null);
-            v.add(null);
+            v.add(null); //ImpVol
+            v.add(null); //Prob of Profit
             v.add(null); //Edge
+            v.add(null); //KC Loss Level
             v.add(null);
             v.add(null);
             v.add(null);
             v.add(null);
             v.add(null);
-            v.add(null);
-            v.add(null);
+            v.add(null); //Amount of Max Loss
             v.add(null); // Number of Contracts To Trade
+            v.add(position.conid());
             model.addOrUpdateRow(position.contract(), v);
         }
     }

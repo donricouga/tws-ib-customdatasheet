@@ -39,7 +39,8 @@ public enum TableColumnNames {
     NETLOSS(25, "Net Loss"),
     PERPORTFOLIOPERTRADE(26,"% of Portfolio per trade"),  //editable
     AMOUNTMAXLOSS(27, "Amount of max loss"),
-    NUMCONTRACTSTRADE(28, "Number of Contracts to Trade");
+    NUMCONTRACTSTRADE(28, "Number of Contracts to Trade"),
+    CONTRACTID(29, "Contract Id");
 
 
 

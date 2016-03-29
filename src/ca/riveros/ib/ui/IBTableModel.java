@@ -52,10 +52,6 @@ public class IBTableModel extends DefaultTableModel {
         Integer rowIndex = dataMap.get(contractId);
         if(rowIndex == null) {
             System.out.println("INSERTING NEW ROW");
-            //have to get NetLiq and InitMarginReq from fields above since updatePortfolio() runs after accountValue()
-            vector.set(TableColumnNames.getIndexByName("Margin Initial Change"), initMarginReq);
-            //vector.set(TableColumnNames.getIndexByName("Net Liq"), netLiq);
-
             dataMap.put(contractId, super.getRowCount());
             super.addRow(vector);
 
@@ -77,13 +73,7 @@ public class IBTableModel extends DefaultTableModel {
         }
 
     }
-
-    public void updateAllRowsAtDoubleColumn(Double value, int column) {
-        int rowCount = getRowCount();
-        for(int i = 0; i < rowCount; i++) {
-            setValueAt(value, i, column);
-        }
-    }
+    
 
     /**
      * Resets the model for another account. Will cause everything to wait for this operation to finish.
@@ -114,8 +104,11 @@ public class IBTableModel extends DefaultTableModel {
     @Override
     public Class getColumnClass(int column) {
         int colIndex = TableColumnNames.getIndexByName("Contract");
+        int contractIdIdx = TableColumnNames.getIndexByName("Contract Id");
         if(column == colIndex)
             return String.class;
+        else if(column == contractIdIdx)
+            return Integer.class;
         else
             return Double.class;
     }

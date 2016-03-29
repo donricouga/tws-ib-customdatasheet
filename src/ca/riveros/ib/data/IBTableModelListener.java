@@ -22,6 +22,8 @@ public class IBTableModelListener implements TableModelListener {
             int row = e.getFirstRow();
             int col = e.getColumn();
 
+            String account = IBCustomTable.INSTANCE.getModel().getSelectedAcctCode();
+
             IBTableModel model = IBCustomTable.INSTANCE.getModel();
             Double netLiq = Util.formatString(IBCustomTable.INSTANCE.getAccountNetLiq().getText());
 
@@ -30,6 +32,7 @@ public class IBTableModelListener implements TableModelListener {
                 Double margInitChange = (Double) model.getValueAt(row,col);
                 Double posPerNetLiq = CustomFormulas.calcPositionPerOfNetLiq(margInitChange,netLiq);
                 updateCell(posPerNetLiq, row, getIndexByName("Position % of NetLiq"));
+                PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), margInitChange);
             }
 
             if (col == getIndexByName("Target Profit %")) {
@@ -116,7 +119,6 @@ public class IBTableModelListener implements TableModelListener {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("SETTING " + o + " AT " + row + "," + col);
                 IBCustomTable.INSTANCE.getModel().setValueAt(o, row, col);
             }
         });

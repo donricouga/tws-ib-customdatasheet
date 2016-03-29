@@ -13,29 +13,33 @@ import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
  */
 public class ClosingPosForProfRenderer extends DefaultTableCellRenderer {
 
+    private int row, col;
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-        //Cells are by default rendered as a JLabel.
-        Component l = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+        this.row = row;
+        this.col = col;
 
-        //Get the status for the current row.
-        IBTableModel tableModel = (IBTableModel) table.getModel();
+        // Allow superclass to return rendering component.
+        return super.getTableCellRendererComponent(table, value,
+                isSelected, hasFocus,
+                row, col);
+    }
+
+    protected void setValue(Object v) {
+        // Allow superclass to set the value.
+        super.setValue(v);
+
+        IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
         Double targetProfitPer = (Double) tableModel.getValueAt(row, getIndexByName("Target Profit %"));
-        Double avgCostO = (Double) tableModel.getValueAt(row, getIndexByName("Average Cost"));
-        Double midO = (Double) tableModel.getValueAt(row, getIndexByName("Mid"));
 
-        if(targetProfitPer == 0.0 || avgCostO == 0.0 || midO == 0.0)
-            return l;
-
-        Double closingPosForProf = CustomFormulas.calcClosingPositionForProfit(avgCostO, midO);
+        Double closingPosForProf = (Double) tableModel.getValueAt(row, col);
         if (closingPosForProf >=  targetProfitPer )
-            l.setBackground(Color.GREEN);
-        else
-            l.setBackground(Color.RED);
-
-        //Return the JLabel which renders the cell.
-        return l;
+            setBackground(Color.GREEN);
+        else {
+            setBackground(UIManager.getColor("Table.background "));
+        }
     }
 
 }

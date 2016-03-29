@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
+import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
 
@@ -62,14 +63,21 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         JFrame frame = new JFrame("Custom IB Data Table");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        //set alternate Row Color
+       /* UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        if (defaults.get("Table.alternateRowColor") == null)
+            defaults.put("Table.alternateRowColor", new Color(240, 240, 240));*/
+
         model = createTableModel();
 
         //Create the JTable with the Default TableModel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JTable table = new JTable(model);
 
-        //Add Cell Renderers
-        table.getColumnModel().getColumn(TableColumnNames.getIndexByName("Closing Position for Profit")).setCellRenderer(new ClosingPosForProfRenderer());
+        //remove uneeded columns and Add Cell Renderers
+        //removeUneededColumns(table);
+        int closPosProfIdx = table.getColumnModel().getColumnIndex("Closing Position for Profit");
+        table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
@@ -94,7 +102,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
                 String accountName = (String) cb.getSelectedItem();
                 model.resetModel(accountName);
-                System.out.println("Requesting account update for accountName" + accountName);
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });
@@ -107,12 +114,12 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         cp.add(createMessageTextArea(), BorderLayout.SOUTH);
 
         JScrollPane pane = new JScrollPane(table);
+
         frame.add(pane, BorderLayout.CENTER);
         frame.pack();
         frame.setSize(new Double(screenSize.width * .9).intValue(), new Double(screenSize.height * .8).intValue());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
 
     }
 
@@ -273,6 +280,15 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         return jPanel;
     }
 
+    public void removeUneededColumns(JTable table) {
+        int bidPriceIdx = getIndexByName("Bid Price");
+        table.getColumnModel().removeColumn(table.getColumnModel().getColumn(bidPriceIdx));
+
+        int askPriceIdx = table.getColumnModel().getColumnIndex("Ask Price");
+        table.getColumnModel().removeColumn(table.getColumnModel().getColumn(askPriceIdx));
+
+    }
+
     public NewTabbedPanel createMessageTextArea() {
 
         m_msg.setEditable( false);
@@ -382,6 +398,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     public void setPerCapTraded(JTextField perCapTraded) {
         this.perCapTraded = perCapTraded;
     }
+
+
 
     private static class Logger implements ApiConnection.ILogger {
         final private JTextArea m_area;

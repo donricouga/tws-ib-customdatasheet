@@ -1,0 +1,50 @@
+package ca.riveros.ib.data;
+
+import java.io.*;
+import java.util.Properties;
+
+/**
+ * Created by rriveros on 3/29/16.
+ */
+public final class PersistentFields {
+
+    private static Properties properties = new Properties();
+    private static OutputStream out;
+    private static File file;
+
+    static {
+        try {
+            file = new File("keyvalue.properties");
+            file.createNewFile();
+            FileInputStream in = new FileInputStream(file);
+            properties.load(in);
+            in.close();
+        } catch (FileNotFoundException fnfe) {
+            System.out.println(fnfe);
+            System.exit(-1);
+        } catch(IOException ioe) {
+            System.out.println(ioe);
+            System.exit(-1);
+        }
+    }
+
+    public static Double getValue(String account, int contractId) {
+        String key = account + "." + contractId;
+        Object o = properties.get(key);
+        if(o == null)
+            return null;
+        else
+            return Double.valueOf((String) o);
+    }
+
+    public static void setValue(String account, int contractId, Double value) {
+        properties.setProperty(account + "." + contractId, value.toString());
+        try {
+            out = new FileOutputStream(file);
+            properties.store(out, "");
+            out.close();
+        }catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+}
