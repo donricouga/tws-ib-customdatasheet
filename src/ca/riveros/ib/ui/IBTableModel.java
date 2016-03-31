@@ -78,7 +78,7 @@ public class IBTableModel extends DefaultTableModel {
         }
 
     }
-    
+
     /**
      * Resets the model for another account. Will cause everything to wait for this operation to finish.
      * @param accountCode

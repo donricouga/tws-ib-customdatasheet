@@ -120,6 +120,8 @@ public class IBTableModelListener implements TableModelListener {
             PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, cellEdited);
         }
 
+        IBCustomTable.INSTANCE.removeUneededColumns();
+
     }
 
     public void updateCell(Object o, int row, int col) {

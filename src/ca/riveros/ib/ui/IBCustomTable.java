@@ -28,6 +28,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     private ApiController m_controller;
     public static IBCustomTable INSTANCE = new IBCustomTable();
     public static Boolean LOG_ERRORS_ONLY = false;
+    private JTable table;
     public IBTableModel model;
 
     /** Logging to the GUI **/
@@ -72,10 +73,10 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Create the JTable with the Default TableModel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        JTable table = new JTable(model);
+        table = new JTable(model);
 
         //remove uneeded columns and Add Cell Renderers
-        //removeUneededColumns(table);
+        removeUneededColumns();
         int closPosProfIdx = table.getColumnModel().getColumnIndex("Closing Position for Profit");
         table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
 
@@ -102,6 +103,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
                 String accountName = (String) cb.getSelectedItem();
                 model.resetModel(accountName);
+                System.out.println("Requesting account update for accountName" + accountName);
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
             }
         });
@@ -280,13 +282,22 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         return jPanel;
     }
 
-    public void removeUneededColumns(JTable table) {
+    public void removeUneededColumns() {
         int bidPriceIdx = getIndexByName("Bid Price");
-        table.getColumnModel().removeColumn(table.getColumnModel().getColumn(bidPriceIdx));
-
         int askPriceIdx = table.getColumnModel().getColumnIndex("Ask Price");
-        table.getColumnModel().removeColumn(table.getColumnModel().getColumn(askPriceIdx));
+        int contractId = table.getColumnModel().getColumnIndex("Contract Id");
 
+        table.getColumnModel().getColumn(bidPriceIdx).setWidth(0);
+        table.getColumnModel().getColumn(bidPriceIdx).setMinWidth(0);
+        table.getColumnModel().getColumn(bidPriceIdx).setMaxWidth(0);
+
+        table.getColumnModel().getColumn(askPriceIdx).setWidth(0);
+        table.getColumnModel().getColumn(askPriceIdx).setMinWidth(0);
+        table.getColumnModel().getColumn(askPriceIdx).setMaxWidth(0);
+
+        table.getColumnModel().getColumn(contractId).setWidth(0);
+        table.getColumnModel().getColumn(contractId).setMinWidth(0);
+        table.getColumnModel().getColumn(contractId).setMaxWidth(0);
     }
 
     public NewTabbedPanel createMessageTextArea() {
@@ -398,8 +409,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     public void setPerCapTraded(JTextField perCapTraded) {
         this.perCapTraded = perCapTraded;
     }
-
-
 
     private static class Logger implements ApiConnection.ILogger {
         final private JTextArea m_area;
