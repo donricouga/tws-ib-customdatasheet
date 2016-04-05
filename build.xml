@@ -18,7 +18,9 @@ http://jakarta.apache.org/ant
     <property name="jar.dir" value="."/>
 
     <target name="init">
-      <mkdir dir="${classes.dir}"/>
+        <delete file="${jar.dir}/${ant.project.name}.jar"/>
+        <delete dir="${classes.dir}"/>
+        <mkdir dir="${classes.dir}"/>
     </target>
 
     <target name="compile" depends="init">
@@ -34,9 +36,9 @@ http://jakarta.apache.org/ant
 
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir=".">
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
             <manifest>
-                <attribute name="Main-Class" value="ca.riveros.ib.ui.MainDataSheet"/>
+                <attribute name="Main-Class" value="ca.riveros.ib.ui.IBCustomTable"/>
             </manifest>
             <zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>
         </jar>
