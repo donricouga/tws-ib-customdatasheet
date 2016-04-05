@@ -24,7 +24,7 @@ public class IBTableModelListener implements TableModelListener {
         String account = IBCustomTable.INSTANCE.getModel().getSelectedAcctCode();
 
         IBTableModel model = IBCustomTable.INSTANCE.getModel();
-        Double netLiq = Util.formatString(IBCustomTable.INSTANCE.getAccountNetLiq().getText());
+        Double netLiq = IBCustomTable.INSTANCE.getAccountNetLiq();
 
         if(col == getIndexByName("Mid")) {
             Double mid = (Double) model.getValueAt(row,col);

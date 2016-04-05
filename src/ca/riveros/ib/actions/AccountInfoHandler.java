@@ -51,8 +51,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JTextField tf = IBCustomTable.INSTANCE.getAccountNetLiq();
-                    tf.setText(Util.formatNumber(value));
+                    IBCustomTable.INSTANCE.setAccountNetLiq(Double.valueOf(value));
                 }
             });
         }

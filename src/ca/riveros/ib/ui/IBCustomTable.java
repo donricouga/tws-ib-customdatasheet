@@ -9,11 +9,15 @@ import com.ib.controller.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -45,8 +49,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     private JTextField accountNetLiq = new JTextField("0.0",8);
     private JTextField totalNetLiq = new JTextField("0.0",8);
     private JTextField totalInitMarg = new JTextField("0.0",8);
-    private JTextField perCapToTrade = new JTextField("     ",3);
-    private JTextField perCapTraded = new JTextField("0.0",3);
+    private JTextField perCapToTrade = new JTextField("00.00",4);
+    private JTextField perCapTraded = new JTextField("00.00",4);
     private JTextArea m_msg = new JTextArea();
 
     /** DATA **/
@@ -105,6 +109,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 model.resetModel(accountName);
                 System.out.println("Requesting account update for accountName" + accountName);
                 INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
+
             }
         });
 
@@ -122,6 +127,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         frame.setSize(new Double(screenSize.width * .9).intValue(), new Double(screenSize.height * .8).intValue());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        //Request account summary
+        INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
 
     }
 
@@ -279,6 +287,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         jPanel.add(new JLabel("Percentage Capital Traded"));
         perCapTraded.setEditable(false);
         jPanel.add(perCapTraded);
+
         return jPanel;
     }
 
@@ -370,44 +379,44 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         }
     }
 
-    public JTextField getAccountNetLiq() {
-        return accountNetLiq;
+    public Double getAccountNetLiq() {
+        return Double.valueOf(Util.formatString(accountNetLiq.getText()));
     }
 
-    public void setAccountNetLiq(JTextField accountNetLiq) {
-        this.accountNetLiq = accountNetLiq;
+    public void setAccountNetLiq(Double accountNetLiq) {
+        this.accountNetLiq.setText(Util.formatDouble(accountNetLiq));
     }
 
-    public JTextField getTotalNetLiq() {
-        return totalNetLiq;
+    public Double getTotalNetLiq() {
+        return Double.valueOf(Util.formatString(totalNetLiq.getText()));
     }
 
-    public void setTotalNetLiq(JTextField totalNetLiq) {
-        this.totalNetLiq = totalNetLiq;
+    public void setTotalNetLiq(Double totalNetLiq) {
+        this.totalNetLiq.setText(Util.formatDouble(totalNetLiq));
     }
 
-    public JTextField getTotalInitMarg() {
-        return totalInitMarg;
+    public Double getTotalInitMarg() {
+        return Double.valueOf(Util.formatString(totalInitMarg.getText()));
     }
 
-    public void setTotalInitMarg(JTextField totalInitMarg) {
-        this.totalInitMarg = totalInitMarg;
+    public void setTotalInitMarg(Double totalInitMarg) {
+        this.totalInitMarg.setText(Util.formatDouble(totalInitMarg));
     }
 
-    public JTextField getPerCapToTrade() {
-        return perCapToTrade;
+    public Double getPerCapToTrade() {
+        String text = perCapToTrade.getText();
+        if(text == null || text.isEmpty())
+            return 0.0;
+        else
+            return Double.valueOf(perCapToTrade.getText());
     }
 
-    public void setPerCapToTrade(JTextField perCapToTrade) {
-        this.perCapToTrade = perCapToTrade;
+    public Double getPerCapTraded() {
+        return Double.valueOf(Util.formatString(perCapTraded.getText()));
     }
 
-    public JTextField getPerCapTraded() {
-        return perCapTraded;
-    }
-
-    public void setPerCapTraded(JTextField perCapTraded) {
-        this.perCapTraded = perCapTraded;
+    public void setPerCapTraded(Double perCapTraded) {
+        this.perCapTraded.setText(Util.formatDouble(perCapTraded));
     }
 
     private static class Logger implements ApiConnection.ILogger {

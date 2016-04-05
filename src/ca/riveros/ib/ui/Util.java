@@ -60,6 +60,11 @@ public class Util {
         return formatter.format(n);
     }
 
+    /**
+     * Takes a String formatted as ###,###.00 and returns a Double
+     * @param number
+     * @return
+     */
     public static Double formatString(String number) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         try {
@@ -68,6 +73,16 @@ public class Util {
             pe.printStackTrace();
             return 0.0;
         }
+    }
+
+    /**
+     * Returns a double as a string formatted as follows ###,###.00
+     * @param d
+     * @return
+     */
+    public static String formatDouble(Double d) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        return nf.format(d);
     }
 
     /** Configure dialog to close when Esc is pressed. */
