@@ -53,8 +53,9 @@ public enum TableColumnNames {
     private String name;
 
     //private static final Map<Integer, TableColumnNames> COLUMN_INDEX_NAME_MAP = new HashMap<>();
-    public static final Map<String, Integer> INDEX_COLUMN_NAME_MAP = new HashMap<>(40);
-    public static final ArrayList<Integer> nonEditableCellsList = new ArrayList<>(40);
+    public static final Map<String, Integer> INDEX_COLUMN_NAME_MAP = new HashMap<String, Integer>(40);
+    public static final ArrayList<Integer> nonEditableCellsList = new ArrayList<Integer>(40);
+    public static final ArrayList<Integer> editableCellsList = new ArrayList<Integer>(10);
     private static final List<String> NAMES = new ArrayList<>(40);
 
 
@@ -74,6 +75,13 @@ public enum TableColumnNames {
         nonEditableCellsList.remove(getIndexByName("Edge"));
         nonEditableCellsList.remove(getIndexByName("% of Portfolio per trade"));
         nonEditableCellsList.remove(getIndexByName("Probability of Profit"));
+
+        editableCellsList.add(getIndexByName("Margin Initial Change"));
+        editableCellsList.add(getIndexByName("Target Profit %"));
+        editableCellsList.add(getIndexByName("Target Loss %"));
+        editableCellsList.add(getIndexByName("Edge"));
+        editableCellsList.add(getIndexByName("% of Portfolio per trade"));
+        editableCellsList.add(getIndexByName("Probability of Profit"));
     }
 
     /*public static TableColumnNames fromIndex(int colIndex) {

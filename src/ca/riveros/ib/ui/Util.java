@@ -98,7 +98,7 @@ public class Util {
         String expiry = contract.expiry();
         Double strike = contract.strike();
         String right = contract.right().getApiString(); //"None" is default
-        String exchange = contract.exchange();
+        String exchange = contract.exchange() == null ? "" : contract.exchange();
 
         if(expiry != null && !expiry.isEmpty()) {
             try {

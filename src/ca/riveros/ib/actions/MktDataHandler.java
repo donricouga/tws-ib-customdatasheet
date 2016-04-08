@@ -58,14 +58,16 @@ public class MktDataHandler implements ApiController.IOptHandler {
     @Override
     public void tickOptionComputation(NewTickType tickType, double impliedVol, double delta, double optPrice,
                                       double pvDividend, double gamma, double vega, double theta, double undPrice) {
-        System.out.println("TickType Comp : " + tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
-        IBTableModel model = IBCustomTable.INSTANCE.getModel();
-        Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
-        if(contractId == null)
-            return;
-        Integer row = model.getDataMap().get(contractId);
-        model.setValueAt(delta, row, TableColumnNames.getIndexByName("Delta"));
-        model.setValueAt(impliedVol, row, TableColumnNames.getIndexByName("ImpVol %"));
+        if(NewTickType.ASK_OPTION.equals(tickType)) {
+            System.out.println("TickType Comp : " + tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
+            IBTableModel model = IBCustomTable.INSTANCE.getModel();
+            Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
+            if (contractId == null)
+                return;
+            Integer row = model.getDataMap().get(contractId);
+            model.setValueAt(delta, row, TableColumnNames.getIndexByName("Delta"));
+            model.setValueAt(impliedVol, row, TableColumnNames.getIndexByName("ImpVol %"));
+        }
 
     }
 

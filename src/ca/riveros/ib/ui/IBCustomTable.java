@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -81,8 +82,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //remove uneeded columns and Add Cell Renderers
         removeUneededColumns();
-        int closPosProfIdx = table.getColumnModel().getColumnIndex("Closing Position for Profit");
-        table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
+
+        //Add DefaultTableCellRenderers
+        addRenderers();
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
@@ -292,10 +294,28 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         return jPanel;
     }
 
+    private void addRenderers() {
+        int closPosProfIdx = table.getColumnModel().getColumnIndex("Closing Position for Profit");
+        int uPnlIdx = table.getColumnModel().getColumnIndex("Unrealized PNL");
+        table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
+        table.getColumnModel().getColumn(uPnlIdx).setCellRenderer(new UnPNLRenderer());
+
+        for(int i = 0; i < TableColumnNames.editableCellsList.size(); i++) {
+            table.getColumnModel().getColumn(TableColumnNames.editableCellsList.get(i)).setCellRenderer(new ManualColumnsRenderer());
+        }
+    }
+
     public void removeUneededColumns() {
         int bidPriceIdx = getIndexByName("Bid Price");
         int askPriceIdx = table.getColumnModel().getColumnIndex("Ask Price");
         int contractId = table.getColumnModel().getColumnIndex("Contract Id");
+
+        //Set max width for all columns
+        /*for(int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setWidth(60);
+            table.getColumnModel().getColumn(i).setPreferredWidth(60);
+            table.getColumnModel().getColumn(i).setMaxWidth(60);
+        }*/
 
         table.getColumnModel().getColumn(bidPriceIdx).setWidth(0);
         table.getColumnModel().getColumn(bidPriceIdx).setMinWidth(0);
@@ -308,6 +328,20 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         table.getColumnModel().getColumn(contractId).setWidth(0);
         table.getColumnModel().getColumn(contractId).setMinWidth(0);
         table.getColumnModel().getColumn(contractId).setMaxWidth(0);
+
+
+        /*table.getTableHeader().setDefaultRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                {
+                    JTextArea area = new JTextArea();
+                    area.setEditable(false);
+                    area.setLineWrap(true);
+                    area.setText(value.toString());
+                    return area;
+                }
+            }
+        });*/
     }
 
     public NewTabbedPanel createMessageTextArea() {
