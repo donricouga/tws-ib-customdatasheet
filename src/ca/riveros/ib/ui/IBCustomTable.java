@@ -130,6 +130,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Request account summary
         INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
+        new PositionsDialog(frame);
 
     }
 

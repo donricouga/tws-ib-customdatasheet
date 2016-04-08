@@ -44,7 +44,7 @@ public class Test implements EWrapper
         //Call Request Account Updates
         String []accountNames ={"DF276965","DU276966","DU276967","DU276968","DU276969","DU276970"};
 
-        client.reqAccountUpdates(true, "DU276968");
+        client.reqPositions();
 
         /*StringBuilder sb = new StringBuilder();
         for (AccountSummaryTag tag : AccountSummaryTag.values()) {
@@ -60,11 +60,8 @@ public class Test implements EWrapper
     }
 
     public static void main(String []args) {
-        //new Test();
-        Double a = new Double(3.3);
-        Class c = a.getClass();
-        System.out.println(c.getName());
-        System.out.println(c.getName().equals("java.lang.Double"));
+        new Test();
+
     }
 
 

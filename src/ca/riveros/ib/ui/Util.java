@@ -1,11 +1,12 @@
 package ca.riveros.ib.ui;
 
+import com.ib.controller.NewContract;
+
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.*;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.AbstractAction;
@@ -83,6 +84,46 @@ public class Util {
     public static String formatDouble(Double d) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         return nf.format(d);
+    }
+
+    /**
+     * Generates a user friendly contract Name
+     * @param contract
+     * @return
+     */
+    public static String generateContractName(NewContract contract) {
+        String symbol = contract.symbol();
+        String secType = contract.secType().getApiString();
+        String tradingClass = contract.tradingClass();
+        String expiry = contract.expiry();
+        Double strike = contract.strike();
+        String right = contract.right().getApiString(); //"None" is default
+        String exchange = contract.exchange();
+
+        if(expiry != null && !expiry.isEmpty()) {
+            try {
+                DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
+                DateFormat targetFormat = new SimpleDateFormat("MMMdd''yy");
+                Date date = originalFormat.parse(expiry);
+                expiry = targetFormat.format(date);
+            }catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+        } else {
+            expiry = "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(symbol).append(" ").append(secType).append(" (").append(tradingClass).append(") ")
+                .append(expiry).append(" ");
+        if(strike != 0.0)
+            sb.append(strike).append(" ");
+        if(!"None".equals(right))
+            sb.append(right).append(" ");
+        sb.append("@").append(exchange);
+
+        return sb.toString();
+
     }
 
     /** Configure dialog to close when Esc is pressed. */

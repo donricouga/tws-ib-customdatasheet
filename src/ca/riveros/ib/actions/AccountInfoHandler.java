@@ -92,46 +92,10 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             this.position = position;
         }
 
-        /** Generates user friendly contract name **/
-        private String generateContractName(NewContract contract) {
-            String symbol = contract.symbol();
-            String secType = contract.secType().getApiString();
-            String tradingClass = contract.tradingClass();
-            String expiry = contract.expiry();
-            Double strike = contract.strike();
-            String right = contract.right().getApiString(); //"None" is default
-            String exchange = contract.exchange();
-
-            if(expiry != null && !expiry.isEmpty()) {
-                try {
-                    DateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
-                    DateFormat targetFormat = new SimpleDateFormat("MMMdd''yy");
-                    Date date = originalFormat.parse(expiry);
-                    expiry = targetFormat.format(date);
-                }catch (ParseException pe) {
-                    pe.printStackTrace();
-                }
-            } else {
-                expiry = "";
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(symbol).append(" ").append(secType).append(" (").append(tradingClass).append(") ")
-                    .append(expiry).append(" ");
-            if(strike != 0.0)
-                sb.append(strike).append(" ");
-            if(!"None".equals(right))
-                sb.append(right).append(" ");
-            sb.append("@").append(exchange);
-
-            return sb.toString();
-
-        }
-
         @Override
         public void run() {
             Vector v = new Vector(TableColumnNames.getNames().length);
-            v.add(generateContractName(position.contract()));
+            v.add(Util.generateContractName(position.contract()));
             v.add(position.position());
             v.add(position.marketPrice());
             v.add(position.marketValue());
