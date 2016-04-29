@@ -19,8 +19,9 @@ public class MktDataHandler implements ApiController.IOptHandler {
 
     @Override
     public void tickPrice(NewTickType tickType, double price, int canAutoExecute) {
+        System.out.println("BLAH TICKTYPE : " + tickType + " PRICE IS " + price);
         if(BID_PRICE.equals(tickType.name()) || ASK_PRICE.equals(tickType.name())) {
-            //System.out.println("TickType : " + tickType.name() + " Price : " + price + " FOR HANDLER " + handlerId);
+            System.out.println("TickType : " + tickType.name() + " Price : " + price + " FOR HANDLER " + handlerId);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -58,8 +59,9 @@ public class MktDataHandler implements ApiController.IOptHandler {
     @Override
     public void tickOptionComputation(NewTickType tickType, double impliedVol, double delta, double optPrice,
                                       double pvDividend, double gamma, double vega, double theta, double undPrice) {
+        //System.out.println("TickType Comp : " + tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
         if(NewTickType.ASK_OPTION.equals(tickType)) {
-            System.out.println("TickType Comp : " + tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
+            System.out.println(tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
             IBTableModel model = IBCustomTable.INSTANCE.getModel();
             Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
             if (contractId == null)

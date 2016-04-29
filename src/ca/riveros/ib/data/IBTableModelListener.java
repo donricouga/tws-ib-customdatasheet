@@ -28,7 +28,7 @@ public class IBTableModelListener implements TableModelListener {
 
         if(col == getIndexByName("Mid")) {
             Double mid = (Double) model.getValueAt(row,col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Average Cost"));
+            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
             Double closPosProf = CustomFormulas.calcClosingPositionForProfit(avgCost,mid);
             updateCell(closPosProf, row, getIndexByName("Closing Position for Profit"));
         }
@@ -42,7 +42,7 @@ public class IBTableModelListener implements TableModelListener {
 
         if (col == getIndexByName("Target Profit %")) {
             Double cellEdited = (Double) model.getValueAt(row, col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Average Cost"));
+            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
 
             //Calculate Closing Position for Profit
             Double closPosProf = CustomFormulas.calcClosingPositionForProfit(avgCost, (Double) model.getValueAt(row, getIndexByName("Mid")));
@@ -84,7 +84,7 @@ public class IBTableModelListener implements TableModelListener {
             //TODO : ASK ARTURO???
         } else if (col == getIndexByName("Edge")) {
             Double cellEdited = (Double) model.getValueAt(row, col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Average Cost"));
+            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
             Double targetProfitPer = (Double) model.getValueAt(row, getIndexByName("Target Profit %"));
             Double probOfProfit = (Double) model.getValueAt(row, getIndexByName("Probability of Profit"));
             Double kcLossLevel = CustomFormulas.calcKCLossLevel(getIndexByName("Target Profit %"), probOfProfit, cellEdited);
@@ -111,7 +111,7 @@ public class IBTableModelListener implements TableModelListener {
             updateCell(amtMaxLoss, row, getIndexByName("Amount of max loss"));
 
             //Calculate Number of Contracts to Trade
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Average Cost"));
+            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
             Double targetProfitPer = (Double) model.getValueAt(row, getIndexByName("Target Profit %"));
             Double probOfProfit = (Double) model.getValueAt(row, getIndexByName("Probability of Profit"));
             CustomFormulas.calcNumContractsToTrade(netLiq, cellEdited,

@@ -29,6 +29,8 @@ public class PositionsDialog extends JDialog implements ApiController.IPositionH
     public PositionsDialog(JFrame frame) {
         super(frame);
         createModel();
+        this.setAlwaysOnTop(true);
+        this.setModal(false);
         table = new JTable(model);
         Container c = getContentPane();
         c.add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -37,7 +39,7 @@ public class PositionsDialog extends JDialog implements ApiController.IPositionH
         this.add(pane, BorderLayout.CENTER);
         this.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(new Double(screenSize.width * .7).intValue(), new Double(screenSize.height * .5).intValue());
+        //this.setSize(new Double(screenSize.width * .7).intValue(), new Double(screenSize.height * .5).intValue());
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         IBCustomTable.INSTANCE.controller().reqPositions(this);

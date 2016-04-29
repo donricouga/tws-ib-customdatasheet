@@ -10,10 +10,6 @@ import com.ib.controller.NewContract;
 import com.ib.controller.Position;
 
 import javax.swing.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Vector;
 
 import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
@@ -38,15 +34,16 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
      */
     @Override
     public void accountValue(String account, String key, String value, String currency) {
-        /*if(INIT_MARGIN_REQ.equals(key)) {
+        if(INIT_MARGIN_REQ.equals(key)) {
             System.out.println("Received InitMarginReq " + value + " for account " + account);
-            if(model.getRowCount() == 0)
+            /*if(model.getRowCount() == 0)
                 model.setInitMarginReq(Double.valueOf(value));
             else
                 model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Margin Initial Change"));
+                */
 
         }
-        else */
+        else
         if(NET_LIQUIDATION.equals(key)) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -97,11 +94,11 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             Vector v = new Vector(TableColumnNames.getNames().length);
             v.add(Util.generateContractName(position.contract()));
             v.add(position.position());
+            v.add(calculateAvgCost(position.contract(), position.averageCost()));
             v.add(position.marketPrice());
             v.add(position.marketValue());
             v.add(position.unrealPnl());
             v.add(position.realPnl());
-            v.add(position.averageCost());
             v.add(null); // Bid Price
             v.add(null); //Ask Price
             v.add(null); //Mid
@@ -127,5 +124,11 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(position.conid());
             model.addOrUpdateRow(position.contract(), v);
         }
+    }
+
+    private double calculateAvgCost(NewContract con, double averageCost) {
+        if("OPT".equals(con.secType().getApiString()))
+            return averageCost / 100;
+        return averageCost;
     }
 }

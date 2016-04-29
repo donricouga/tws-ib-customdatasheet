@@ -13,11 +13,11 @@ import java.util.Map;
 public enum TableColumnNames {
     CONTRACT(0, "Contract"),
     POSITION(1,"Position"),
-    MARKETPRICE(2,"Market Price"),
-    MARKETVALUE(3,"Market Value"),
-    UNREALIZEDDPNL(4,"Unrealized PNL"),
-    REALIZEDPNL(5,"Realized PNL"),
-    AVGCOST(6,"Average Cost"),
+    AVGCOST(2,"Entry Avg Cost"),
+    MARKETPRICE(3,"Market Price"),
+    MARKETVALUE(4,"Market Value"),
+    UNREALIZEDDPNL(5,"Unrealized PNL"),
+    REALIZEDPNL(6,"Realized PNL"),
     BIDPRICE(7,"Bid Price"),  //Hide This Column
     ASKPRICE(8,"Ask Price"),  //Hide This Column
     MID(9,"Mid"), //CHANGE NUMBERS
@@ -25,19 +25,19 @@ public enum TableColumnNames {
     POSPERNETLIQ(11,"Position % of NetLiq"),
     TARGETPROFITPER(12, "Target Profit %"),  //editable
     TARGETLOSSPER(13, "Target Loss %"), //editable
-    CLOSINGPOSFORPROFIT(14, "Closing Position for Profit"),
-    CLOSINGPOSFORLOSS(15, "Closing Position for Loss"),
-    PLPERCENTAGE(16,"P/L%"),
-    DELTA(17, "Delta"),
-    IMPVOL(18, "ImpVol %"),
-    PROBOFPROFIT(19, "Probability of Profit"),
-    EDGE(20, "Edge"), //editable
-    KCLOSSLEVEL(21, "KC Loss Level"),
-    TAKEPROFITSAT(22, "Take Profits At"),
-    NETPROFIT(23, "Net Profit"),
-    TAKELOSSAT(24, "Take Loss at"),
-    NETLOSS(25, "Net Loss"),
-    PERPORTFOLIOPERTRADE(26,"% of Portfolio per trade"),  //editable
+    PROBOFPROFIT(14, "Probability of Profit"), //editable
+    EDGE(15, "Edge"), //editable
+    PERPORTFOLIOPERTRADE(16,"% of Portfolio per trade"),  //editable
+    CLOSINGPOSFORPROFIT(17, "Closing Position for Profit"),
+    CLOSINGPOSFORLOSS(18, "Closing Position for Loss"),
+    PLPERCENTAGE(19,"P/L%"),
+    DELTA(20, "Delta"),
+    IMPVOL(21, "ImpVol %"),
+    KCLOSSLEVEL(22, "KC Loss Level"), //"<html><center>KC<br>Loss Level"
+    TAKEPROFITSAT(23, "Take Profits At"),
+    NETPROFIT(24, "Net Profit"),
+    TAKELOSSAT(25, "Take Loss at"),
+    NETLOSS(26, "Net Loss"),
     AMOUNTMAXLOSS(27, "Amount of max loss"),
     NUMCONTRACTSTRADE(28, "Number of Contracts to Trade"),
     CONTRACTID(29, "Contract Id");

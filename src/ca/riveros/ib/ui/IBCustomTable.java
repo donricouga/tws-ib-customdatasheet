@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -57,6 +58,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     /** DATA **/
     private final ArrayList<String> m_acctList = new ArrayList<String>();
     public ArrayList<String> accountList() 	{ return m_acctList; }
+
+    private String selectedAccount = "";
+    public String getSelectedAccount() { return selectedAccount;}
 
     /** Only one of these should exists at any given moment **/
     private AccountSummaryHandler accountSummaryHandler = null;
@@ -107,10 +111,10 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 JComboBox cb = (JComboBox) e.getSource();
                 DefaultComboBoxModel dcbm = (DefaultComboBoxModel) cb.getModel();
                 dcbm.removeElement(DEFAULT_SELECT_ITEM);
-                String accountName = (String) cb.getSelectedItem();
-                model.resetModel(accountName);
-                System.out.println("Requesting account update for accountName" + accountName);
-                INSTANCE.controller().reqAccountUpdates(true, accountName, new AccountInfoHandler());
+                selectedAccount = (String) cb.getSelectedItem();
+                model.resetModel(selectedAccount);
+                System.out.println("Requesting account update for accountName" + selectedAccount);
+                INSTANCE.controller().reqAccountUpdates(true, selectedAccount, new AccountInfoHandler());
 
             }
         });
@@ -124,6 +128,14 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         JScrollPane pane = new JScrollPane(table);
 
+        table.setTableHeader(new JTableHeader(table.getColumnModel()) {
+            @Override public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.height = 32;
+                return d;
+            }
+        });
+
         frame.add(pane, BorderLayout.CENTER);
         frame.pack();
         frame.setSize(new Double(screenSize.width * .9).intValue(), new Double(screenSize.height * .8).intValue());
@@ -132,7 +144,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Request account summary
         INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
-        new PositionsDialog(frame);
+        //new PositionsDialog(frame);
 
     }
 
@@ -336,6 +348,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 {
                     JTextArea area = new JTextArea();
                     area.setEditable(false);
+                    area.setSize(5,30);
                     area.setLineWrap(true);
                     area.setText(value.toString());
                     return area;
