@@ -126,7 +126,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Add Logging Data
         cp.add(createMessageTextArea(), BorderLayout.SOUTH);
 
-        JScrollPane pane = new JScrollPane(table);
+        FixedColumnScrollPane pane = new FixedColumnScrollPane(table,1);
 
         table.setTableHeader(new JTableHeader(table.getColumnModel()) {
             @Override public Dimension getPreferredSize() {

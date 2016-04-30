@@ -67,8 +67,8 @@ public class MktDataHandler implements ApiController.IOptHandler {
             if (contractId == null)
                 return;
             Integer row = model.getDataMap().get(contractId);
-            model.setValueAt(delta, row, TableColumnNames.getIndexByName("Delta"));
-            model.setValueAt(impliedVol, row, TableColumnNames.getIndexByName("ImpVol %"));
+            model.setValueAt(delta * 100, row, TableColumnNames.getIndexByName("Delta"));
+            model.setValueAt(impliedVol * 100, row, TableColumnNames.getIndexByName("ImpVol %"));
         }
 
     }

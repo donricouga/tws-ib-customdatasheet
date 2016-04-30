@@ -2,7 +2,7 @@ package ca.riveros.ib.ui;
 
 import com.ib.controller.NewContract;
 
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.text.*;
@@ -21,6 +21,9 @@ import javax.swing.table.TableColumnModel;
 public class Util {
     private static final int BUF = 14;
     private static final int MAX = 300;
+
+    public static Color OK_GREEN = new Color(153,255,153);
+    public static Color WARNING_RED = new Color(255,102,102);
 
     /** Resize all columns in the table to fit widest row including header. */
     public static void resizeColumns( JTable table) {

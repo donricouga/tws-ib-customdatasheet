@@ -34,9 +34,9 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
 
 
         if (unrealizedPNL > 0 )
-            setBackground(Color.GREEN);
+            setBackground(Util.OK_GREEN);
         else if(unrealizedPNL < 0) {
-            setBackground(Color.RED);
+            setBackground(Util.WARNING_RED);
         }
     }
 }
