@@ -8,23 +8,16 @@ import java.math.BigDecimal;
 public class CustomFormulas {
 
     public static double calcPositionPerOfNetLiq(double marginInitialChange, double netLiq) {
-        if(netLiq == 0)
+        if (netLiq == 0)
             return 0;
-        return new BigDecimal((marginInitialChange / netLiq) * 100)
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .doubleValue();
+        return (marginInitialChange / netLiq);
     }
 
-    public static double calcClosingPositionForProfit(double avgCost, double mid) {
-        if(avgCost > 0) {
-            return (mid - avgCost) / avgCost;
-        }
-        else if(avgCost < 0) {
+    public static double calcClosingPositionForProfit(int position, double avgCost, double mid) {
+        if(position < 0) {
             return (avgCost - mid) / avgCost;
         }
-        else {
-            return 0;
-        }
+        return (mid - avgCost) / avgCost;
     }
 
     public static double calcKCLossLevel(double targetProfitPer, double probOfProfit, double edge) {

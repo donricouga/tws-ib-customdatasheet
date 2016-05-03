@@ -115,7 +115,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
                 model.resetModel(selectedAccount);
                 System.out.println("Requesting account update for accountName" + selectedAccount);
                 INSTANCE.controller().reqAccountUpdates(true, selectedAccount, new AccountInfoHandler());
-
             }
         });
 
@@ -144,7 +143,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Request account summary
         INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
-        //new PositionsDialog(frame);
 
     }
 

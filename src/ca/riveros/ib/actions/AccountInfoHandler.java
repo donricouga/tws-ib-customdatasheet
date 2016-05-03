@@ -45,10 +45,14 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         }
         else
         if(NET_LIQUIDATION.equals(key)) {
+            System.out.println("Received Account NetLiq " + value + " for account " + account);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     IBCustomTable.INSTANCE.setAccountNetLiq(Double.valueOf(value));
+                    for(int i = 0; i < model.getRowCount(); i++) {
+                        model.setValueAt(model.getValueAt(i, getIndexByName("Margin Initial Change")),i,getIndexByName("Margin Initial Change"));
+                    }
                 }
             });
         }
@@ -77,6 +81,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         System.out.println("ACCOUNT : " + position.account());
         System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
         IBCustomTable.INSTANCE.showIn("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
+        System.out.println("RECEIVED UPDATE FOR CONTRACT : " + position.conid() + " ACCOUNT " + position.account());
         SwingUtilities.invokeLater(new UpdatePortfolioGUI(position));
 
     }
@@ -104,21 +109,21 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.add(null); //Mid
             v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Margin Initial Change")));
             v.add(null); //Position % of Net Liq
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Profit %")));
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Loss %")));
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Profit %"), 0.5));
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Loss %"), 2.0));
             v.add(null); //Closing Position for Profit
             v.add(null); //Closing Position for Loss
             v.add(null); //P&L
             v.add(null); //Delta
             v.add(null); //ImpVol
             v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Probability of Profit")));
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Edge")));
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Edge"), 2.0));
             v.add(null); //KC Loss Level
-            v.add(null);
-            v.add(null);
-            v.add(null);
-            v.add(null);
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("% of Portfolio per trade")));
+            v.add(null); //Take Profits At
+            v.add(null); //Net Profit
+            v.add(null); //Take Loss at
+            v.add(null); //Net Loss
+            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("% of Portfolio per trade"),.015));
             v.add(null); //Amount of Max Loss
             v.add(null); // Number of Contracts To Trade
             v.add(position.conid());

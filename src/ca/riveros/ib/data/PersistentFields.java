@@ -37,6 +37,15 @@ public final class PersistentFields {
             return Double.valueOf((String) o);
     }
 
+    public static Double getValue(String account, int contractId, int col, double defaultValue) {
+        String key = account + "." + contractId + "." + col;
+        Object o = properties.get(key);
+        if(o == null)
+            return defaultValue;
+        else
+            return Double.valueOf((String) o);
+    }
+
     public static void setValue(String account, int contractId, int col, Double value) {
         properties.setProperty(account + "." + contractId + "." + col, value.toString());
         try {

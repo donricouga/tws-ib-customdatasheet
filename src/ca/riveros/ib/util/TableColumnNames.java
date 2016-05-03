@@ -27,17 +27,17 @@ public enum TableColumnNames {
     TARGETLOSSPER(13, "Target Loss %"), //editable
     PROBOFPROFIT(14, "Probability of Profit"), //editable
     EDGE(15, "Edge"), //editable
-    PERPORTFOLIOPERTRADE(16,"% of Portfolio per trade"),  //editable
-    CLOSINGPOSFORPROFIT(17, "Closing Position for Profit"),
-    CLOSINGPOSFORLOSS(18, "Closing Position for Loss"),
-    PLPERCENTAGE(19,"P/L%"),
-    DELTA(20, "Delta"),
-    IMPVOL(21, "ImpVol %"),
-    KCLOSSLEVEL(22, "KC Loss Level"), //"<html><center>KC<br>Loss Level"
-    TAKEPROFITSAT(23, "Take Profits At"),
-    NETPROFIT(24, "Net Profit"),
-    TAKELOSSAT(25, "Take Loss at"),
-    NETLOSS(26, "Net Loss"),
+    CLOSINGPOSFORPROFIT(16, "Closing Position for Profit"),
+    CLOSINGPOSFORLOSS(17, "Closing Position for Loss"),
+    PLPERCENTAGE(18,"P/L%"),
+    DELTA(19, "Delta"),
+    IMPVOL(20, "ImpVol %"),
+    KCLOSSLEVEL(21, "KC Loss Level"), //"<html><center>KC<br>Loss Level"
+    TAKEPROFITSAT(22, "Take Profits At"),
+    NETPROFIT(23, "Net Profit"),
+    TAKELOSSAT(24, "Take Loss at"),
+    NETLOSS(25, "Net Loss"),
+    PERPORTFOLIOPERTRADE(26,"% of Portfolio per trade"),  //editable
     AMOUNTMAXLOSS(27, "Amount of max loss"),
     NUMCONTRACTSTRADE(28, "Number of Contracts to Trade"),
     CONTRACTID(29, "Contract Id");

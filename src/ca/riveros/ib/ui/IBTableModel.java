@@ -64,17 +64,15 @@ public class IBTableModel extends DefaultTableModel {
                 IBCustomTable.INSTANCE.showOut("Requesting Contract Details for contract \n" + newContract);
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
 
-            //Fire Events for persistent fields.
-            //fireUpdatedPersistentFields(vector, getRowCount() - 1);
         }
         else {
-            System.out.println("UPDATING ROW");
+            /*System.out.println("UPDATING ROW");
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
                     super.setValueAt(o, rowIndex, i);
                 }
-            }
+            }*/
         }
 
     }

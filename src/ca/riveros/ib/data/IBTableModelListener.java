@@ -20,21 +20,24 @@ public class IBTableModelListener implements TableModelListener {
     public void tableChanged(TableModelEvent e) {
         int row = e.getFirstRow();
         int col = e.getColumn();
+        System.out.println("CALLED FOR ROW " + row + " COL " + col);
 
         String account = IBCustomTable.INSTANCE.getModel().getSelectedAcctCode();
 
         IBTableModel model = IBCustomTable.INSTANCE.getModel();
         Double netLiq = IBCustomTable.INSTANCE.getAccountNetLiq();
+        Integer position = (Integer) model.getValueAt(row, getIndexByName("Position"));
 
         if(col == getIndexByName("Mid")) {
             Double mid = (Double) model.getValueAt(row,col);
             Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
-            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(avgCost,mid);
+            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(position, avgCost,mid);
             updateCell(closPosProf, row, getIndexByName("Closing Position for Profit"));
         }
-
-        if (col == getIndexByName("Margin Initial Change")) {
-            Double margInitChange = (Double) model.getValueAt(row,col);
+        //We use -1 for column because at the beginning when populating all the rows, column is unavailable.
+        if (col == getIndexByName("Margin Initial Change") || col == -1) {
+            System.out.println("CALLED LISTENER FOR MARGIN INITIAL CHANGE");
+            Double margInitChange = (Double) model.getValueAt(row,getIndexByName("Margin Initial Change"));
             Double posPerNetLiq = CustomFormulas.calcPositionPerOfNetLiq(margInitChange,netLiq);
             updateCell(posPerNetLiq, row, getIndexByName("Position % of NetLiq"));
             PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, margInitChange);
@@ -45,7 +48,7 @@ public class IBTableModelListener implements TableModelListener {
             Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry Avg Cost"));
 
             //Calculate Closing Position for Profit
-            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(avgCost, (Double) model.getValueAt(row, getIndexByName("Mid")));
+            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(position, avgCost, (Double) model.getValueAt(row, getIndexByName("Mid")));
             updateCell(closPosProf, row, getIndexByName("Closing Position for Profit"));
 
             //Calculate KC Loss Level
