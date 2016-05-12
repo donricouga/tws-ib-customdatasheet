@@ -68,8 +68,8 @@ public class FixedColumnScrollPane extends JScrollPane {
         headerColumn.setPreferredWidth(290);
         headerColumn.setHeaderValue("Contract");
 
-        int bidPriceIdx = getIndexByName("Bid Price");
-        int askPriceIdx = mainTable.getColumnModel().getColumnIndex("Ask Price");
+        int bidPriceIdx = getIndexByName("Bid");
+        int askPriceIdx = mainTable.getColumnModel().getColumnIndex("Ask");
         int contractId = mainTable.getColumnModel().getColumnIndex("Contract Id");
 
         for (int i = 1; i < mainColumnTableModel.getColumnCount(); i++) {

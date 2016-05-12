@@ -30,7 +30,7 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
         super.setValue(v);
 
         IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
-        Double unrealizedPNL = (Double) tableModel.getValueAt(row, getIndexByName("Unrealized PNL"));
+        Double unrealizedPNL = (Double) tableModel.getValueAt(row, getIndexByName("Unrealized P/L"));
 
 
         if (unrealizedPNL > 0 )

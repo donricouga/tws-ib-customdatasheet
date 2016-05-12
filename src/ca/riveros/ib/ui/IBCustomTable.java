@@ -305,8 +305,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     private void addRenderers() {
-        int closPosProfIdx = table.getColumnModel().getColumnIndex("Closing Position for Profit");
-        int uPnlIdx = table.getColumnModel().getColumnIndex("Unrealized PNL");
+        int closPosProfIdx = table.getColumnModel().getColumnIndex("% P/L");
+        int uPnlIdx = table.getColumnModel().getColumnIndex("Unrealized P/L");
         table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
         table.getColumnModel().getColumn(uPnlIdx).setCellRenderer(new UnPNLRenderer());
 
@@ -316,8 +316,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     public void removeUneededColumns() {
-        int bidPriceIdx = getIndexByName("Bid Price");
-        int askPriceIdx = table.getColumnModel().getColumnIndex("Ask Price");
+        int bidPriceIdx = getIndexByName("Bid");
+        int askPriceIdx = table.getColumnModel().getColumnIndex("Ask");
         int contractId = table.getColumnModel().getColumnIndex("Contract Id");
 
         //Set max width for all columns

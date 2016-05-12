@@ -32,7 +32,7 @@ public class ClosingPosForProfRenderer extends DefaultTableCellRenderer {
         super.setValue(v);
 
         IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
-        Double targetProfitPer = (Double) tableModel.getValueAt(row, getIndexByName("Target Profit %"));
+        Double targetProfitPer = (Double) tableModel.getValueAt(row, getIndexByName("Profit %"));
 
         Double closingPosForProf = (Double) tableModel.getValueAt(row, col);
         if (closingPosForProf >=  targetProfitPer )

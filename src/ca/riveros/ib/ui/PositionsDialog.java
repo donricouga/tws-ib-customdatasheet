@@ -80,7 +80,7 @@ public class PositionsDialog extends JDialog implements ApiController.IPositionH
         };
         model.addColumn("Account");
         model.addColumn("Contract");
-        model.addColumn("Position");
+        model.addColumn("Qty");
         model.addColumn("Avg Cost");
         model.addColumn("ContractId");
         model.addTableModelListener(new TableModelListener() {

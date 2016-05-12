@@ -12,35 +12,36 @@ import java.util.Map;
  */
 public enum TableColumnNames {
     CONTRACT(0, "Contract"),
-    POSITION(1,"Position"),
-    AVGCOST(2,"Entry Avg Cost"),
-    MARKETPRICE(3,"Market Price"),
-    MARKETVALUE(4,"Market Value"),
-    UNREALIZEDDPNL(5,"Unrealized PNL"),
-    REALIZEDPNL(6,"Realized PNL"),
-    BIDPRICE(7,"Bid Price"),  //Hide This Column
-    ASKPRICE(8,"Ask Price"),  //Hide This Column
-    MID(9,"Mid"), //CHANGE NUMBERS
-    MARGININITCHG(10,"Margin Initial Change"),
-    POSPERNETLIQ(11,"Position % of NetLiq"),
-    TARGETPROFITPER(12, "Target Profit %"),  //editable
-    TARGETLOSSPER(13, "Target Loss %"), //editable
-    PROBOFPROFIT(14, "Probability of Profit"), //editable
-    EDGE(15, "Edge"), //editable
-    CLOSINGPOSFORPROFIT(16, "Closing Position for Profit"),
-    CLOSINGPOSFORLOSS(17, "Closing Position for Loss"),
-    PLPERCENTAGE(18,"P/L%"),
-    DELTA(19, "Delta"),
-    IMPVOL(20, "ImpVol %"),
-    KCLOSSLEVEL(21, "KC Loss Level"), //"<html><center>KC<br>Loss Level"
-    TAKEPROFITSAT(22, "Take Profits At"),
-    NETPROFIT(23, "Net Profit"),
-    TAKELOSSAT(24, "Take Loss at"),
-    NETLOSS(25, "Net Loss"),
-    PERPORTFOLIOPERTRADE(26,"% of Portfolio per trade"),  //editable
-    AMOUNTMAXLOSS(27, "Amount of max loss"),
-    NUMCONTRACTSTRADE(28, "Number of Contracts to Trade"),
-    CONTRACTID(29, "Contract Id");
+    QTY(1,"Qty"),
+    KCQTY(2, "KC-Qty"),
+    QTYOPENCLOSE(3, "Qty. Open/Close"),
+    ENTRYDOL(4,"Entry $"),
+    MID(5,"Mid"), //CHANGE NUMBERS
+    UNREALPNL(6,"Unreal P/L"),
+    REALPNL(7,"Real P/L"),
+    PEROFPORT(8,"% of Port"),
+    KCPERPORT(9,"KC % Port"),  //editable
+    MARGIN(10,"Margin"),
+    PROFITPER(11, "Profit %"),  //editable
+    LOSSPER(12, "Loss %"), //editable
+    PROBPROFIT(13, "Prob. Profit"), //editable
+    KCEDGE(14, "KC Edge"), //editable
+    PERPL(15, "% P/L"),
+    KCPROFITPER(16,"KC Profit %"),
+    KCLOSSPER(17, "KC Loss %"), //"<html><center>KC<br>Loss Level"
+    KCTAKEPROFITDOL(18, "KC Take Profit $"),
+    KCTAKELOSSDOL(19, "KC Take Loss $"),
+    KCNETPROFITDOL(20, "KC Net Profit $"),
+    KCNETLOSSDOL(21,"KC Net Loss $"),
+    KCMAXLOSS(22, "KC Max Loss"),
+    MARKETDOL(23,"Market $"),
+    NOTIONAL(24,"Notional"),
+    DELTA(25, "Delta"),
+    IMPVOLPER(26, "ImpVol %"),
+    BID(27,"Bid"),  //Hide This Column
+    ASK(28,"Ask"),  //Hide This Column
+    CONTRACTID(29, "Contract Id"); //Hid This Column
+
 
 
 
@@ -69,19 +70,20 @@ public enum TableColumnNames {
         for(int i = 0; i < NAMES.size(); i++) {
             nonEditableCellsList.add(i);
         }
-        nonEditableCellsList.remove(getIndexByName("Margin Initial Change"));
-        nonEditableCellsList.remove(getIndexByName("Target Profit %"));
-        nonEditableCellsList.remove(getIndexByName("Target Loss %"));
-        nonEditableCellsList.remove(getIndexByName("Edge"));
-        nonEditableCellsList.remove(getIndexByName("% of Portfolio per trade"));
-        nonEditableCellsList.remove(getIndexByName("Probability of Profit"));
+        nonEditableCellsList.remove(MARGIN.ordinal());
+        nonEditableCellsList.remove(PROFITPER.ordinal());
+        nonEditableCellsList.remove(LOSSPER.ordinal());
+        nonEditableCellsList.remove(KCEDGE.ordinal());
+        nonEditableCellsList.remove(KCPERPORT.ordinal());
+        nonEditableCellsList.remove(PROBPROFIT.ordinal());
 
-        editableCellsList.add(getIndexByName("Margin Initial Change"));
-        editableCellsList.add(getIndexByName("Target Profit %"));
-        editableCellsList.add(getIndexByName("Target Loss %"));
-        editableCellsList.add(getIndexByName("Edge"));
-        editableCellsList.add(getIndexByName("% of Portfolio per trade"));
-        editableCellsList.add(getIndexByName("Probability of Profit"));
+
+        editableCellsList.remove(MARGIN.ordinal());
+        editableCellsList.remove(PROFITPER.ordinal());
+        editableCellsList.remove(LOSSPER.ordinal());
+        editableCellsList.remove(KCEDGE.ordinal());
+        editableCellsList.remove(KCPERPORT.ordinal());
+        editableCellsList.remove(PROBPROFIT.ordinal());
     }
 
     /*public static TableColumnNames fromIndex(int colIndex) {

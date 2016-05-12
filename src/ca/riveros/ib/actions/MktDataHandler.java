@@ -26,21 +26,21 @@ public class MktDataHandler implements ApiController.IOptHandler {
                 @Override
                 public void run() {
                     IBTableModel model = IBCustomTable.INSTANCE.getModel();
-                    String idxName = BID_PRICE.equals(tickType.name()) ? "Bid Price" : "Ask Price";
+                    String idxName = BID_PRICE.equals(tickType.name()) ? "Bid" : "Ask";
                     Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
                     Integer row = model.getDataMap().get(contractId);
                     model.setValueAt(price, row , TableColumnNames.getIndexByName(idxName));
 
                     //also set mid
                     if(BID_PRICE.equals(tickType.name())) {
-                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Ask Price"));
+                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Ask"));
                         if(o != null) {
                             Double askPrice = (Double) o;
                             model.setValueAt((price + askPrice) / 2, row, TableColumnNames.getIndexByName("Mid"));
                         }
                     }
                     else {
-                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Bid Price"));
+                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Bid"));
                         if(o != null) {
                             Double bidPrice = (Double) o;
                             model.setValueAt((price + bidPrice) / 2, row, TableColumnNames.getIndexByName("Mid"));

@@ -12,7 +12,7 @@ import com.ib.controller.Position;
 import javax.swing.*;
 import java.util.Vector;
 
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+import static ca.riveros.ib.util.TableColumnNames.*;
 
 
 public class AccountInfoHandler implements ApiController.IAccountHandler {
@@ -39,7 +39,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             /*if(model.getRowCount() == 0)
                 model.setInitMarginReq(Double.valueOf(value));
             else
-                model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Margin Initial Change"));
+                model.updateAllRowsAtDoubleColumn(Double.valueOf(value), TableColumnNames.getIndexByName("Margin"));
                 */
 
         }
@@ -51,7 +51,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
                 public void run() {
                     IBCustomTable.INSTANCE.setAccountNetLiq(Double.valueOf(value));
                     for(int i = 0; i < model.getRowCount(); i++) {
-                        model.setValueAt(model.getValueAt(i, getIndexByName("Margin Initial Change")),i,getIndexByName("Margin Initial Change"));
+                        model.setValueAt(model.getValueAt(i, getIndexByName("Margin")),i,getIndexByName("Margin"));
                     }
                 }
             });
@@ -97,36 +97,23 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         @Override
         public void run() {
             Vector v = new Vector(TableColumnNames.getNames().length);
-            v.add(Util.generateContractName(position.contract()));
-            v.add(position.position());
-            v.add(calculateAvgCost(position.contract(), position.averageCost()));
-            v.add(position.marketPrice());
-            v.add(position.marketValue());
-            v.add(position.unrealPnl());
-            v.add(position.realPnl());
-            v.add(null); // Bid Price
-            v.add(null); //Ask Price
-            v.add(null); //Mid
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Margin Initial Change")));
-            v.add(null); //Position % of Net Liq
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Profit %"), 0.5));
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Target Loss %"), 2.0));
-            v.add(null); //Closing Position for Profit
-            v.add(null); //Closing Position for Loss
-            v.add(null); //P&L
-            v.add(null); //Delta
-            v.add(null); //ImpVol
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Probability of Profit")));
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("Edge"), 2.0));
-            v.add(null); //KC Loss Level
-            v.add(null); //Take Profits At
-            v.add(null); //Net Profit
-            v.add(null); //Take Loss at
-            v.add(null); //Net Loss
-            v.add(PersistentFields.getValue(position.account(), position.conid(), getIndexByName("% of Portfolio per trade"),.015));
-            v.add(null); //Amount of Max Loss
-            v.add(null); // Number of Contracts To Trade
-            v.add(position.conid());
+            for(int i = 0; i < TableColumnNames.getNames().length; i++)
+                v.add(null);
+
+            v.add(CONTRACTID.ordinal(),Util.generateContractName(position.contract()));
+            v.add(QTY.ordinal(), position.position());
+            v.add(ENTRYDOL.ordinal(), calculateAvgCost(position.contract(), position.averageCost()));
+            v.add(MARKETDOL.ordinal(), position.marketPrice());
+            v.add(NOTIONAL.ordinal(), position.marketValue());
+            v.add(UNREALPNL.ordinal(), position.unrealPnl());
+            v.add(REALPNL.ordinal(), position.realPnl());
+            v.add(MARGIN.ordinal(), PersistentFields.getValue(position.account(), position.conid(), MARGIN.ordinal()));
+            v.add(PROFITPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), PROFITPER.ordinal(), 0.57));
+            v.add(LOSSPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), LOSSPER.ordinal(), .26));
+            v.add(PROBPROFIT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), PROBPROFIT.ordinal(),0.91));
+            v.add(KCEDGE.ordinal(), PersistentFields.getValue(position.account(), position.conid(), KCEDGE.ordinal(), 2.0));
+            v.add(KCPERPORT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), KCPERPORT.ordinal(),0.15));
+            v.add(CONTRACTID.ordinal(),position.conid());
             model.addOrUpdateRow(position.contract(), v);
         }
     }
