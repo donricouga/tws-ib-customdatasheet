@@ -66,24 +66,22 @@ public enum TableColumnNames {
             NAMES.add(c.name);
         }
 
+
+        editableCellsList.add(MARGIN.ordinal());
+        editableCellsList.add(PROFITPER.ordinal());
+        editableCellsList.add(LOSSPER.ordinal());
+        editableCellsList.add(KCEDGE.ordinal());
+        editableCellsList.add(KCPERPORT.ordinal());
+        editableCellsList.add(PROBPROFIT.ordinal());
+
         //NOW get list of non editable Cells
         for(int i = 0; i < NAMES.size(); i++) {
-            nonEditableCellsList.add(i);
+            if(!editableCellsList.contains(i)) {
+                nonEditableCellsList.add(i);
+            }
         }
-        nonEditableCellsList.remove(MARGIN.ordinal());
-        nonEditableCellsList.remove(PROFITPER.ordinal());
-        nonEditableCellsList.remove(LOSSPER.ordinal());
-        nonEditableCellsList.remove(KCEDGE.ordinal());
-        nonEditableCellsList.remove(KCPERPORT.ordinal());
-        nonEditableCellsList.remove(PROBPROFIT.ordinal());
 
 
-        editableCellsList.remove(MARGIN.ordinal());
-        editableCellsList.remove(PROFITPER.ordinal());
-        editableCellsList.remove(LOSSPER.ordinal());
-        editableCellsList.remove(KCEDGE.ordinal());
-        editableCellsList.remove(KCPERPORT.ordinal());
-        editableCellsList.remove(PROBPROFIT.ordinal());
     }
 
     /*public static TableColumnNames fromIndex(int colIndex) {

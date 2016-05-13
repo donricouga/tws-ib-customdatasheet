@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+import static ca.riveros.ib.util.TableColumnNames.PROFITPER;
 
 /**
  * Created by rriveros on 3/25/16.
@@ -32,7 +32,7 @@ public class ClosingPosForProfRenderer extends DefaultTableCellRenderer {
         super.setValue(v);
 
         IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
-        Double targetProfitPer = (Double) tableModel.getValueAt(row, getIndexByName("Profit %"));
+        Double targetProfitPer = (Double) tableModel.getValueAt(row, PROFITPER.ordinal());
 
         Double closingPosForProf = (Double) tableModel.getValueAt(row, col);
         if (closingPosForProf >=  targetProfitPer )

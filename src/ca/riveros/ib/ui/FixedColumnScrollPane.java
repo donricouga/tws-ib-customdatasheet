@@ -1,5 +1,7 @@
 package ca.riveros.ib.ui;
 
+import ca.riveros.ib.util.TableColumnNames;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
@@ -10,6 +12,12 @@ import java.awt.*;
 import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
 
 public class FixedColumnScrollPane extends JScrollPane {
+
+    int bidPriceIdx = TableColumnNames.BID.ordinal();
+    int askPriceIdx = TableColumnNames.ASK.ordinal();
+    int contractId = TableColumnNames.CONTRACTID.ordinal();
+
+    JTable scrollViewTable = null;
 
     public FixedColumnScrollPane(JTable mainTable, final int numberFixedColumns) {
         super();
@@ -42,7 +50,7 @@ public class FixedColumnScrollPane extends JScrollPane {
         // pane keeps them in sync
         TableModel mainTableModel = mainTable.getModel();
         JTable headerColumnTable = new JTable(mainTableModel, headerTableColumnModel);
-        JTable scrollViewTable = new JTable(mainTableModel, scrollViewTableColumnModel);
+        scrollViewTable = new JTable(mainTableModel, scrollViewTableColumnModel);
         scrollViewTable.setRowSorter(mainTable.getRowSorter());
         headerColumnTable.setRowSorter(mainTable.getRowSorter());
 
@@ -68,10 +76,6 @@ public class FixedColumnScrollPane extends JScrollPane {
         headerColumn.setPreferredWidth(290);
         headerColumn.setHeaderValue("Contract");
 
-        int bidPriceIdx = getIndexByName("Bid");
-        int askPriceIdx = mainTable.getColumnModel().getColumnIndex("Ask");
-        int contractId = mainTable.getColumnModel().getColumnIndex("Contract Id");
-
         for (int i = 1; i < mainColumnTableModel.getColumnCount(); i++) {
             if(i == bidPriceIdx || i == askPriceIdx || i == contractId) {
                 TableColumn mainColumn = mainColumnTableModel.getColumn(i);
@@ -87,6 +91,8 @@ public class FixedColumnScrollPane extends JScrollPane {
                 scrollViewTableColumn.setPreferredWidth(mainColumn.getPreferredWidth());
             }
         }
+
+        hideColumns();
 
         int headerColumnMaxSize = headerColumnTable.getPreferredSize().width;
         headerColumnTable.setMaximumSize(new Dimension(headerColumnMaxSize, 10000));
@@ -110,5 +116,19 @@ public class FixedColumnScrollPane extends JScrollPane {
         // We have to manually attach the row headers, but after that,
         // the scroll pane keeps them in sync
         setRowHeader(headerViewport);
+    }
+
+    public void hideColumns() {
+        scrollViewTable.getColumnModel().getColumn(bidPriceIdx - 1).setWidth(0);
+        scrollViewTable.getColumnModel().getColumn(bidPriceIdx - 1).setMinWidth(0);
+        scrollViewTable.getColumnModel().getColumn(bidPriceIdx - 1).setMaxWidth(0);
+
+        scrollViewTable.getColumnModel().getColumn(askPriceIdx - 1).setWidth(0);
+        scrollViewTable.getColumnModel().getColumn(askPriceIdx - 1).setMinWidth(0);
+        scrollViewTable.getColumnModel().getColumn(askPriceIdx - 1).setMaxWidth(0);
+
+        scrollViewTable.getColumnModel().getColumn(contractId - 1).setWidth(0);
+        scrollViewTable.getColumnModel().getColumn(contractId - 1).setMinWidth(0);
+        scrollViewTable.getColumnModel().getColumn(contractId - 1).setMaxWidth(0);
     }
 }

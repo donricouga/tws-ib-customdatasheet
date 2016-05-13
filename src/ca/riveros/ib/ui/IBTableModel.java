@@ -13,7 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ca.riveros.ib.ui.IBCustomTable.LOG_ERRORS_ONLY;
 
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+import static ca.riveros.ib.util.TableColumnNames.CONTRACT;
+import static ca.riveros.ib.util.TableColumnNames.CONTRACTID;
 
 /**
  * Created by rriveros on 3/20/16.
@@ -66,13 +67,13 @@ public class IBTableModel extends DefaultTableModel {
 
         }
         else {
-            /*System.out.println("UPDATING ROW");
+            System.out.println("UPDATING ROW");
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
                     super.setValueAt(o, rowIndex, i);
                 }
-            }*/
+            }
         }
 
     }
@@ -105,8 +106,8 @@ public class IBTableModel extends DefaultTableModel {
 
     @Override
     public Class getColumnClass(int column) {
-        int colIndex = TableColumnNames.getIndexByName("Contract");
-        int contractIdIdx = TableColumnNames.getIndexByName("Contract Id");
+        int colIndex = CONTRACT.ordinal();
+        int contractIdIdx = CONTRACTID.ordinal();
         if(column == colIndex)
             return String.class;
         else if(column == contractIdIdx)

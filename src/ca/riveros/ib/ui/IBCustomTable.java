@@ -23,6 +23,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import static ca.riveros.ib.util.TableColumnNames.PERPL;
+import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
 import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
@@ -36,6 +38,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     public static Boolean LOG_ERRORS_ONLY = false;
     private JTable table;
     public IBTableModel model;
+    private FixedColumnScrollPane pane;
 
     /** Logging to the GUI **/
     private final JTextArea m_inLog = new JTextArea();
@@ -84,9 +87,6 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         table = new JTable(model);
 
-        //remove uneeded columns and Add Cell Renderers
-        removeUneededColumns();
-
         //Add DefaultTableCellRenderers
         addRenderers();
 
@@ -125,7 +125,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Add Logging Data
         cp.add(createMessageTextArea(), BorderLayout.SOUTH);
 
-        FixedColumnScrollPane pane = new FixedColumnScrollPane(table,1);
+        pane = new FixedColumnScrollPane(table,1);
 
         table.setTableHeader(new JTableHeader(table.getColumnModel()) {
             @Override public Dimension getPreferredSize() {
@@ -188,6 +188,10 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
     public IBTableModel getModel() {
         return model;
+    }
+
+    public FixedColumnScrollPane getPane() {
+        return this.pane;
     }
 
     @Override public void disconnected() {
@@ -305,54 +309,14 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     private void addRenderers() {
-        int closPosProfIdx = table.getColumnModel().getColumnIndex("% P/L");
-        int uPnlIdx = table.getColumnModel().getColumnIndex("Unrealized P/L");
-        table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
+        int closPosProfIdx = PERPL.ordinal();
+        int uPnlIdx = UNREALPNL.ordinal();
+        //table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
         table.getColumnModel().getColumn(uPnlIdx).setCellRenderer(new UnPNLRenderer());
 
         for(int i = 0; i < TableColumnNames.editableCellsList.size(); i++) {
             table.getColumnModel().getColumn(TableColumnNames.editableCellsList.get(i)).setCellRenderer(new ManualColumnsRenderer());
         }
-    }
-
-    public void removeUneededColumns() {
-        int bidPriceIdx = getIndexByName("Bid");
-        int askPriceIdx = table.getColumnModel().getColumnIndex("Ask");
-        int contractId = table.getColumnModel().getColumnIndex("Contract Id");
-
-        //Set max width for all columns
-        /*for(int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setWidth(60);
-            table.getColumnModel().getColumn(i).setPreferredWidth(60);
-            table.getColumnModel().getColumn(i).setMaxWidth(60);
-        }*/
-
-        table.getColumnModel().getColumn(bidPriceIdx).setWidth(0);
-        table.getColumnModel().getColumn(bidPriceIdx).setMinWidth(0);
-        table.getColumnModel().getColumn(bidPriceIdx).setMaxWidth(0);
-
-        table.getColumnModel().getColumn(askPriceIdx).setWidth(0);
-        table.getColumnModel().getColumn(askPriceIdx).setMinWidth(0);
-        table.getColumnModel().getColumn(askPriceIdx).setMaxWidth(0);
-
-        table.getColumnModel().getColumn(contractId).setWidth(0);
-        table.getColumnModel().getColumn(contractId).setMinWidth(0);
-        table.getColumnModel().getColumn(contractId).setMaxWidth(0);
-
-
-        /*table.getTableHeader().setDefaultRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                {
-                    JTextArea area = new JTextArea();
-                    area.setEditable(false);
-                    area.setSize(5,30);
-                    area.setLineWrap(true);
-                    area.setText(value.toString());
-                    return area;
-                }
-            }
-        });*/
     }
 
     public NewTabbedPanel createMessageTextArea() {

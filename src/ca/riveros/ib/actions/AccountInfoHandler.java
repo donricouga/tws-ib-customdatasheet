@@ -51,7 +51,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
                 public void run() {
                     IBCustomTable.INSTANCE.setAccountNetLiq(Double.valueOf(value));
                     for(int i = 0; i < model.getRowCount(); i++) {
-                        model.setValueAt(model.getValueAt(i, getIndexByName("Margin")),i,getIndexByName("Margin"));
+                        //TODO model.setValueAt(model.getValueAt(i, MARGIN.ordinal()),i,MARGIN.ordinal());
                     }
                 }
             });
@@ -100,20 +100,20 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             for(int i = 0; i < TableColumnNames.getNames().length; i++)
                 v.add(null);
 
-            v.add(CONTRACTID.ordinal(),Util.generateContractName(position.contract()));
-            v.add(QTY.ordinal(), position.position());
-            v.add(ENTRYDOL.ordinal(), calculateAvgCost(position.contract(), position.averageCost()));
-            v.add(MARKETDOL.ordinal(), position.marketPrice());
-            v.add(NOTIONAL.ordinal(), position.marketValue());
-            v.add(UNREALPNL.ordinal(), position.unrealPnl());
-            v.add(REALPNL.ordinal(), position.realPnl());
-            v.add(MARGIN.ordinal(), PersistentFields.getValue(position.account(), position.conid(), MARGIN.ordinal()));
-            v.add(PROFITPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), PROFITPER.ordinal(), 0.57));
-            v.add(LOSSPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), LOSSPER.ordinal(), .26));
-            v.add(PROBPROFIT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), PROBPROFIT.ordinal(),0.91));
-            v.add(KCEDGE.ordinal(), PersistentFields.getValue(position.account(), position.conid(), KCEDGE.ordinal(), 2.0));
-            v.add(KCPERPORT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), KCPERPORT.ordinal(),0.15));
-            v.add(CONTRACTID.ordinal(),position.conid());
+            v.set(CONTRACT.ordinal(),Util.generateContractName(position.contract()));
+            v.set(QTY.ordinal(), position.position());
+            v.set(ENTRYDOL.ordinal(), calculateAvgCost(position.contract(), position.averageCost()));
+            v.set(MARKETDOL.ordinal(), position.marketPrice());
+            v.set(NOTIONAL.ordinal(), position.marketValue());
+            v.set(UNREALPNL.ordinal(), position.unrealPnl());
+            v.set(REALPNL.ordinal(), position.realPnl());
+            v.set(MARGIN.ordinal(), PersistentFields.getValue(position.account(), position.conid(), MARGIN.ordinal()));
+            v.set(PROFITPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), PROFITPER.ordinal(), 0.57));
+            v.set(LOSSPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), LOSSPER.ordinal(), .26));
+            v.set(PROBPROFIT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), PROBPROFIT.ordinal(),0.91));
+            v.set(KCEDGE.ordinal(), PersistentFields.getValue(position.account(), position.conid(), KCEDGE.ordinal(), 2.0));
+            v.set(KCPERPORT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), KCPERPORT.ordinal(),0.15));
+            v.set(CONTRACTID.ordinal(),position.conid());
             model.addOrUpdateRow(position.contract(), v);
         }
     }

@@ -54,4 +54,35 @@ public class CustomFormulas {
         return maxLoss / takeLossAt;
     }
 
+    // V2 FORMULAS
+
+    public static double calcKCTakeProfitDol(double avgCost, double kcProfitPer) {
+        return avgCost * (1 - kcProfitPer);
+    }
+
+    public static double calcKCTakeLossDol(double avgCost, double kcEdge) {
+        return avgCost * (1 + kcEdge);
+    }
+
+    public static double calcKCNetProfitDol(double avgCost, double kcTakeProfitDol) {
+        return avgCost - kcTakeProfitDol;
+    }
+
+    public static double calcKCNetLossDol(double avgCost, double kcTakeLossDol) {
+        return avgCost - kcTakeLossDol;
+    }
+
+    public static double calcKCMaxLoss(double netLiq, double kcPerPort) {
+        return netLiq * kcPerPort;
+    }
+
+    public static double calcPerOfPort(double margin, double netLiq) {
+        return margin / netLiq;
+    }
+
+    public static double calcKCLossPer(double kcProfitPer, double probProfit, double kcEdge) {
+        return kcProfitPer / ( (1/ (probProfit - kcEdge)) - 1);
+    }
+
+
 }

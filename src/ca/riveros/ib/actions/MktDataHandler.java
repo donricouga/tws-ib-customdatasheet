@@ -9,6 +9,8 @@ import com.ib.controller.Types;
 
 import javax.swing.*;
 
+import static ca.riveros.ib.util.TableColumnNames.*;
+
 public class MktDataHandler implements ApiController.IOptHandler {
 
     private long handlerId = System.currentTimeMillis();
@@ -26,24 +28,24 @@ public class MktDataHandler implements ApiController.IOptHandler {
                 @Override
                 public void run() {
                     IBTableModel model = IBCustomTable.INSTANCE.getModel();
-                    String idxName = BID_PRICE.equals(tickType.name()) ? "Bid" : "Ask";
+                    int columnVal = BID_PRICE.equals(tickType.name()) ? BID.ordinal() : ASK.ordinal();
                     Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);
                     Integer row = model.getDataMap().get(contractId);
-                    model.setValueAt(price, row , TableColumnNames.getIndexByName(idxName));
+                    model.setValueAt(price, row , columnVal);
 
                     //also set mid
                     if(BID_PRICE.equals(tickType.name())) {
-                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Ask"));
+                        Object o = model.getValueAt(row,ASK.ordinal());
                         if(o != null) {
                             Double askPrice = (Double) o;
-                            model.setValueAt((price + askPrice) / 2, row, TableColumnNames.getIndexByName("Mid"));
+                            model.setValueAt((price + askPrice) / 2, row, MID.ordinal());
                         }
                     }
                     else {
-                        Object o = model.getValueAt(row,TableColumnNames.getIndexByName("Bid"));
+                        Object o = model.getValueAt(row,BID.ordinal());
                         if(o != null) {
                             Double bidPrice = (Double) o;
-                            model.setValueAt((price + bidPrice) / 2, row, TableColumnNames.getIndexByName("Mid"));
+                            model.setValueAt((price + bidPrice) / 2, row, MID.ordinal());
                         }
                     }
                 }
@@ -67,8 +69,8 @@ public class MktDataHandler implements ApiController.IOptHandler {
             if (contractId == null)
                 return;
             Integer row = model.getDataMap().get(contractId);
-            model.setValueAt(delta * 100, row, TableColumnNames.getIndexByName("Delta"));
-            model.setValueAt(impliedVol * 100, row, TableColumnNames.getIndexByName("ImpVol %"));
+            model.setValueAt(delta * 100, row, TableColumnNames.DELTA.ordinal());
+            model.setValueAt(impliedVol * 100, row, TableColumnNames.IMPVOLPER.ordinal());
         }
 
     }

@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
 
 /**
  * Created by ricardo on 4/8/16.
@@ -30,7 +30,7 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
         super.setValue(v);
 
         IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
-        Double unrealizedPNL = (Double) tableModel.getValueAt(row, getIndexByName("Unrealized P/L"));
+        Double unrealizedPNL = (Double) tableModel.getValueAt(row, UNREALPNL.ordinal());
 
 
         if (unrealizedPNL > 0 )

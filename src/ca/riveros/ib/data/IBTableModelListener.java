@@ -2,15 +2,14 @@ package ca.riveros.ib.data;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
-import ca.riveros.ib.ui.Util;
 import ca.riveros.ib.util.CustomFormulas;
-import ca.riveros.ib.util.TableColumnNames;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
+import static ca.riveros.ib.util.TableColumnNames.*;
+import static ca.riveros.ib.util.CustomFormulas.*;
 /**
  * Created by rriveros on 3/18/16.
  */
@@ -26,104 +25,85 @@ public class IBTableModelListener implements TableModelListener {
 
         IBTableModel model = IBCustomTable.INSTANCE.getModel();
         Double netLiq = IBCustomTable.INSTANCE.getAccountNetLiq();
-        Integer position = (Integer) model.getValueAt(row, getIndexByName("Qty"));
+        Integer position = (Integer) model.getValueAt(row, QTY.ordinal());
 
-        if(col == getIndexByName("Mid")) {
-            Double mid = (Double) model.getValueAt(row,col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry $"));
-            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(position, avgCost,mid);
-            updateCell(closPosProf, row, getIndexByName("% P/L"));
+        if(col == ENTRYDOL.ordinal()) {
+            Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
+            Double mid = (Double) model.getValueAt(row, MID.ordinal());
+            Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
+            Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, (Double) model.getValueAt(row, KCPROFITPER.ordinal()));
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, (Double) model.getValueAt(row, KCEDGE.ordinal()));
+            Double kcNetProfitDol = calcKCNetProfitDol(avgCost, kcTakeProfitDol);
+            Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
+
+            //Update Gui
+            updateCell(perPL, row, PERPL.ordinal());
+            updateCell(kcTakeProfitDol, row, KCTAKEPROFITDOL.ordinal());
+            updateCell(kcTakeLossDol, row, KCTAKELOSSDOL.ordinal());
+            updateCell(kcNetProfitDol, row, KCNETPROFITDOL.ordinal());
+            updateCell(kcNetLossDol, row, KCNETLOSSDOL.ordinal());
         }
+
+        else if(col == MID.ordinal()) {
+            Double mid = (Double) model.getValueAt(row,col);
+            Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
+            Double closPosProf = calcClosingPositionForProfit(position, avgCost,mid);
+            updateCell(closPosProf, row, PERPL.ordinal());
+        }
+
+        else if(col == KCPERPORT.ordinal()) {
+            Double kcPerPort = (Double) model.getValueAt(row, KCPERPORT.ordinal());
+            Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
+            updateCell(kcMaxLoss, row, KCMAXLOSS.ordinal());
+            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, kcPerPort);
+
+        }
+
+        else if(col == MARGIN.ordinal()) {
+            Double margin = (Double) model.getValueAt(row, MARGIN.ordinal());
+            Double perOfPort = calcPerOfPort(margin, netLiq);
+            updateCell(perOfPort, row, PEROFPORT.ordinal());
+            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, margin);
+
+        }
+
         //We use -1 for column because at the beginning when populating all the rows, column is unavailable.
-        if (col == getIndexByName("Margin") || col == -1) {
-            System.out.println("CALLED LISTENER FOR MARGIN INITIAL CHANGE");
+        /*else if (col == getIndexByName("Margin") || col == -1) {
             Double margInitChange = (Double) model.getValueAt(row,getIndexByName("Margin"));
             Double posPerNetLiq = CustomFormulas.calcPositionPerOfNetLiq(margInitChange,netLiq);
-            updateCell(posPerNetLiq, row, getIndexByName("% of Port"));
-            PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, margInitChange);
+            updateCell(posPerNetLiq, row, PEROFPORT.ordinal());
+            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, margInitChange);
+
+
+        }*/
+
+        else if(col == PROFITPER.ordinal()) {
+            Double profitPer = (Double) model.getValueAt(row, PROFITPER.ordinal());
+            updateCell(profitPer, row, KCPROFITPER.ordinal());
+            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, profitPer);
         }
 
-        if (col == getIndexByName("Profit %")) {
-            Double cellEdited = (Double) model.getValueAt(row, col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry $"));
-
-            //Calculate Closing Position for Profit
-            Double closPosProf = CustomFormulas.calcClosingPositionForProfit(position, avgCost, (Double) model.getValueAt(row, getIndexByName("Mid")));
-            updateCell(closPosProf, row, getIndexByName("% P/L"));
-
-            //Calculate KC Loss Level
-            Double probOfProfit = (Double) model.getValueAt(row, getIndexByName("Prob. Profit"));
-            Double edge = (Double) model.getValueAt(row, getIndexByName("KC Edge"));
-            Double kcLossLevel = CustomFormulas.calcKCLossLevel(cellEdited, probOfProfit, edge);
-            updateCell(kcLossLevel, row, getIndexByName("KC Loss %"));
-
-            //Calculate Take Profits At
-            Double takeProfitsAt = CustomFormulas.calcTakeProfitsAt(avgCost, cellEdited);
-            updateCell(takeProfitsAt, row, getIndexByName("KC Take Profit $"));
-
-            //Calculate Net Profit
-            Double netProfit = CustomFormulas.calcNetProfit(avgCost, takeProfitsAt);
-            updateCell(netProfit, row, getIndexByName("Net Profit"));
-
-            //Calculate Take Loss At
-            Double takeLossAt = CustomFormulas.calcTakeLossAt(avgCost, cellEdited, probOfProfit, edge);
-            updateCell(takeLossAt, row, getIndexByName("KC Take Loss $"));
-
-            //Calculate Net Loss
-            Double netLoss = CustomFormulas.calcNetLoss(avgCost, cellEdited, probOfProfit, edge);
-            updateCell(netLoss, row, getIndexByName("KC Net Loss $"));
-
-            //Calculate Number of Contracts to Trade
-            CustomFormulas.calcNumContractsToTrade(netLiq,
-                    (Double) model.getValueAt(row, getIndexByName("KC % Port")),
-                    avgCost, (Double) model.getValueAt(row, getIndexByName("Profit %")),
-                    probOfProfit, edge);
-
-            PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, cellEdited);
-
-
-        } else if (col == getIndexByName("Loss %")) {
-            //Nothing in the Formula???
-            //TODO : ASK ARTURO???
-        } else if (col == getIndexByName("KC Edge")) {
-            Double cellEdited = (Double) model.getValueAt(row, col);
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry $"));
-            Double targetProfitPer = (Double) model.getValueAt(row, getIndexByName("Profit %"));
-            Double probOfProfit = (Double) model.getValueAt(row, getIndexByName("Prob. Profit"));
-            Double kcLossLevel = CustomFormulas.calcKCLossLevel(getIndexByName("Profit %"), probOfProfit, cellEdited);
-            updateCell(kcLossLevel, row, getIndexByName("KC Loss %"));
-
-            //Calculate Take Loss At
-            Double takeLossAt = CustomFormulas.calcTakeLossAt(avgCost, targetProfitPer, probOfProfit, cellEdited);
-            updateCell(takeLossAt, row, getIndexByName("KC Take Loss $"));
-
-            //Calculate Net Loss
-            Double netLoss = CustomFormulas.calcNetLoss(avgCost, targetProfitPer, probOfProfit, cellEdited);
-            updateCell(netLoss, row, getIndexByName("KC Net Loss $"));
-
-            //Calculate Number of Contracts to Trade
-            CustomFormulas.calcNumContractsToTrade(netLiq,
-                    (Double) model.getValueAt(row, getIndexByName("KC % Port")),
-                    avgCost, targetProfitPer, probOfProfit, cellEdited);
-
-            PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, cellEdited);
-
-        } else if (col == getIndexByName("KC % Port")) {
-            Double cellEdited = (Double) model.getValueAt(row, col);
-            Double amtMaxLoss = CustomFormulas.calcAmountOfMaxLoss(netLiq, cellEdited);
-            updateCell(amtMaxLoss, row, getIndexByName("KC Max Loss"));
-
-            //Calculate Number of Contracts to Trade
-            Double avgCost = (Double) model.getValueAt(row, getIndexByName("Entry $"));
-            Double targetProfitPer = (Double) model.getValueAt(row, getIndexByName("Profit %"));
-            Double probOfProfit = (Double) model.getValueAt(row, getIndexByName("Prob. Profit"));
-            CustomFormulas.calcNumContractsToTrade(netLiq, cellEdited,
-                    avgCost, targetProfitPer, probOfProfit, (Double) model.getValueAt(row, getIndexByName("KC Edge")));
-
-            PersistentFields.setValue(account, (Integer) model.getValueAt(row, getIndexByName("Contract Id")), col, cellEdited);
+        else if(col == LOSSPER.ordinal()) {
+            Double lossPer = (Double) model.getValueAt(row, LOSSPER.ordinal());
+            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, lossPer);
         }
 
-        IBCustomTable.INSTANCE.removeUneededColumns();
+        else if(col == KCPROFITPER.ordinal() || col == PROBPROFIT.ordinal() || col == KCEDGE.ordinal()) {
+            Double kcProfitPer = (Double)  model.getValueAt(row, KCPROFITPER.ordinal());
+            Double probProfit = (Double) model.getValueAt(row, PROBPROFIT.ordinal());
+            Double kcEdge = (Double) model.getValueAt(row, KCEDGE.ordinal());
+            updateCell(calcKCLossPer(kcProfitPer,probProfit, kcEdge), row, KCLOSSPER.ordinal());
+
+            if(col == KCEDGE.ordinal()) {
+                Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
+                updateCell(calcKCTakeLossDol(avgCost,kcEdge), row, KCTAKELOSSDOL.ordinal());
+                PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, kcEdge);
+            }
+            if(col == PROBPROFIT.ordinal())
+                PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, probProfit);
+        }
+
+        IBCustomTable.INSTANCE.getPane().hideColumns();
 
     }
 
@@ -135,4 +115,6 @@ public class IBTableModelListener implements TableModelListener {
             }
         });
     }
+
+
 }
