@@ -13,46 +13,46 @@ public class CustomFormulas {
         return (marginInitialChange / netLiq);
     }
 
-    public static double calcClosingPositionForProfit(int position, double avgCost, double mid) {
+    public static double calcClosingPositionForProfit(double position, double avgCost, double mid) {
         if(position < 0) {
             return (avgCost - mid) / avgCost;
         }
         return (mid - avgCost) / avgCost;
     }
 
-    public static double calcKCLossLevel(double targetProfitPer, double probOfProfit, double edge) {
-        if( (probOfProfit - edge) == 0)
-            return 0;
-        else return targetProfitPer / ((1/(probOfProfit - edge)) - 1);
-    }
+//    public static double calcKCLossLevel(double targetProfitPer, double probOfProfit, double edge) {
+//        if( (probOfProfit - edge) == 0)
+//            return 0;
+//        else return targetProfitPer / ((1/(probOfProfit - edge)) - 1);
+//    }
 
-    public static double calcTakeProfitsAt(double avgCost, double targetProfitPer) {
-        return avgCost * (1 - targetProfitPer);
-    }
+//    public static double calcTakeProfitsAt(double avgCost, double targetProfitPer) {
+//        return avgCost * (1 - targetProfitPer);
+//    }
 
-    public static double calcNetProfit(double avgCost, double targetProfitPer) {
-        return avgCost - calcTakeProfitsAt(avgCost,targetProfitPer);
-    }
+//    public static double calcNetProfit(double avgCost, double targetProfitPer) {
+//        return avgCost - calcTakeProfitsAt(avgCost,targetProfitPer);
+//    }
 
-    public static double calcTakeLossAt(double avgCost, double targetProfitPer, double probOfProfit, double edge) {
-        return avgCost * (1 + calcKCLossLevel(targetProfitPer, probOfProfit, edge));
-    }
-    public static double calcNetLoss(double avgCost, double targetProfitPer, double probOfProfit, double edge) {
-        return avgCost - calcTakeLossAt(avgCost, targetProfitPer, probOfProfit, edge);
-    }
+//    public static double calcTakeLossAt(double avgCost, double targetProfitPer, double probOfProfit, double edge) {
+//        return avgCost * (1 + calcKCLossLevel(targetProfitPer, probOfProfit, edge));
+//    }
+//    public static double calcNetLoss(double avgCost, double targetProfitPer, double probOfProfit, double edge) {
+//        return avgCost - calcTakeLossAt(avgCost, targetProfitPer, probOfProfit, edge);
+//    }
 
-    public static double calcAmountOfMaxLoss(double netLiq, double perOfPortfolioPerTrade) {
-        return netLiq * perOfPortfolioPerTrade;
-    }
+//    public static double calcAmountOfMaxLoss(double netLiq, double perOfPortfolioPerTrade) {
+//        return netLiq * perOfPortfolioPerTrade;
+//    }
 
-    public static double calcNumContractsToTrade(double netLiq, double perOfPortfolioPerTrade, double avgCost,
-                                                 double targetProfitPer, double probOfProfit, double edge) {
-        double maxLoss = calcAmountOfMaxLoss(netLiq, perOfPortfolioPerTrade);
-        double takeLossAt = calcTakeLossAt(avgCost, targetProfitPer, probOfProfit, edge);
-        if(takeLossAt == 0)
-            return 0;
-        return maxLoss / takeLossAt;
-    }
+//    public static double calcNumContractsToTrade(double netLiq, double perOfPortfolioPerTrade, double avgCost,
+//                                                 double targetProfitPer, double probOfProfit, double edge) {
+//        double maxLoss = calcAmountOfMaxLoss(netLiq, perOfPortfolioPerTrade);
+//        double takeLossAt = calcTakeLossAt(avgCost, targetProfitPer, probOfProfit, edge);
+//        if(takeLossAt == 0)
+//            return 0;
+//        return maxLoss / takeLossAt;
+//    }
 
     // V2 FORMULAS
 
@@ -84,5 +84,8 @@ public class CustomFormulas {
         return kcProfitPer / ( (1/ (probProfit - kcEdge)) - 1);
     }
 
+    public static double calculateKcQty(double kcMaxLoss, double avgCost, double kcEdge) {
+        return (kcMaxLoss) / (avgCost * (1 + kcEdge) * -100);
+    }
 
 }

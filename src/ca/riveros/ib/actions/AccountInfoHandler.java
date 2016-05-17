@@ -12,6 +12,9 @@ import com.ib.controller.Position;
 import javax.swing.*;
 import java.util.Vector;
 
+import static ca.riveros.ib.util.CustomFormulas.calcKCMaxLoss;
+import static ca.riveros.ib.util.CustomFormulas.calcPerOfPort;
+import static ca.riveros.ib.util.CustomFormulas.calculateKcQty;
 import static ca.riveros.ib.util.TableColumnNames.*;
 
 
@@ -49,12 +52,29 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    IBCustomTable.INSTANCE.setAccountNetLiq(Double.valueOf(value));
-                    for(int i = 0; i < model.getRowCount(); i++) {
-                        //TODO model.setValueAt(model.getValueAt(i, MARGIN.ordinal()),i,MARGIN.ordinal());
-                    }
+                    Double netLiq = Double.valueOf(value);
+                    IBCustomTable.INSTANCE.setAccountNetLiq(netLiq);
+                    updateAllAffectedNetLiqData(netLiq);
                 }
             });
+        }
+    }
+
+    private void updateAllAffectedNetLiqData(Double netLiq) {
+        if(model.getRowCount() == 0)
+            return;
+        for(int i = 0; i < model.getRowCount(); i++) {
+            Double margin = (Double) model.getValueAt(i, MARGIN.ordinal());
+            Double perOfPort = calcPerOfPort(margin, netLiq);
+            Double kcPerPort = (Double) model.getValueAt(i, KCPERPORT.ordinal());
+            model.setValueAt(perOfPort, i, PEROFPORT.ordinal());
+            Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
+            model.setValueAt(kcMaxLoss, i, KCMAXLOSS.ordinal());
+            Double entryDol = (Double) model.getValueAt(i, ENTRYDOL.ordinal());
+            Double kcQty = calculateKcQty(kcMaxLoss, entryDol , (Double) model.getValueAt(i, KCEDGE.ordinal()));
+            model.setValueAt(kcQty, i, KCQTY.ordinal());
+            Double position = (Double) model.getValueAt(i, QTY.ordinal());
+            model.setValueAt(kcQty - position, i, QTYOPENCLOSE.ordinal());
         }
     }
 
@@ -101,7 +121,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
                 v.add(null);
 
             v.set(CONTRACT.ordinal(),Util.generateContractName(position.contract()));
-            v.set(QTY.ordinal(), position.position());
+            v.set(QTY.ordinal(), new Double(position.position()));
             v.set(ENTRYDOL.ordinal(), calculateAvgCost(position.contract(), position.averageCost()));
             v.set(MARKETDOL.ordinal(), position.marketPrice());
             v.set(NOTIONAL.ordinal(), position.marketValue());

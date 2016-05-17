@@ -2,6 +2,7 @@ package ca.riveros.ib.ui;
 
 import ca.riveros.ib.actions.ContractDetailsHandler;
 import ca.riveros.ib.actions.MktDataHandler;
+import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.NewContract;
 

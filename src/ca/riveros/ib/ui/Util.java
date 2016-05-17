@@ -70,6 +70,8 @@ public class Util {
      * @return
      */
     public static Double formatString(String number) {
+        if(number == null || number.length() == 0)
+            return 0.0;
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         try {
             return nf.parse(number).doubleValue();

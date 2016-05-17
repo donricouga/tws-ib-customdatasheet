@@ -15,19 +15,28 @@ import static ca.riveros.ib.util.CustomFormulas.*;
  */
 public class IBTableModelListener implements TableModelListener {
 
+
+
     @Override
     public void tableChanged(TableModelEvent e) {
+
+        IBTableModel model = IBCustomTable.INSTANCE.getModel();
+
         int row = e.getFirstRow();
         int col = e.getColumn();
-        System.out.println("CALLED FOR ROW " + row + " COL " + col);
 
         String account = IBCustomTable.INSTANCE.getModel().getSelectedAcctCode();
 
-        IBTableModel model = IBCustomTable.INSTANCE.getModel();
+
         Double netLiq = IBCustomTable.INSTANCE.getAccountNetLiq();
-        Integer position = (Integer) model.getValueAt(row, QTY.ordinal());
+
+        //TODO Tomorrow distinguish between UPDATE AND INSERT!
+        if(e.getType() == TableModelEvent.INSERT) {
+            System.out.println("NEW ROWS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
 
         if(col == ENTRYDOL.ordinal()) {
+            Double position = (Double) model.getValueAt(row, QTY.ordinal());
             Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
             Double mid = (Double) model.getValueAt(row, MID.ordinal());
             Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
@@ -45,6 +54,7 @@ public class IBTableModelListener implements TableModelListener {
         }
 
         else if(col == MID.ordinal()) {
+            Double position = (Double) model.getValueAt(row, QTY.ordinal());
             Double mid = (Double) model.getValueAt(row,col);
             Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
             Double closPosProf = calcClosingPositionForProfit(position, avgCost,mid);
@@ -52,10 +62,20 @@ public class IBTableModelListener implements TableModelListener {
         }
 
         else if(col == KCPERPORT.ordinal()) {
+            Double position = (Double) model.getValueAt(row, QTY.ordinal());
+            Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
+            Double kcEdge = (Double) model.getValueAt(row, KCEDGE.ordinal());
             Double kcPerPort = (Double) model.getValueAt(row, KCPERPORT.ordinal());
             Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
             updateCell(kcMaxLoss, row, KCMAXLOSS.ordinal());
             PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, kcPerPort);
+
+            //Also calculate KC-Qty
+            Double kcQty = calculateKcQty(kcMaxLoss, avgCost, kcEdge);
+            model.setValueAt(kcQty, row, KCQTY.ordinal());
+
+            //Which also affects Qty Open/Close
+            model.setValueAt(kcQty - position, row, QTYOPENCLOSE.ordinal());
 
         }
 
@@ -68,13 +88,8 @@ public class IBTableModelListener implements TableModelListener {
         }
 
         //We use -1 for column because at the beginning when populating all the rows, column is unavailable.
-        /*else if (col == getIndexByName("Margin") || col == -1) {
-            Double margInitChange = (Double) model.getValueAt(row,getIndexByName("Margin"));
-            Double posPerNetLiq = CustomFormulas.calcPositionPerOfNetLiq(margInitChange,netLiq);
-            updateCell(posPerNetLiq, row, PEROFPORT.ordinal());
-            PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, margInitChange);
-
-
+        /*else if (col == -1) {
+            updateAllAffectedNetLiqData(netLiq);
         }*/
 
         else if(col == PROFITPER.ordinal()) {
@@ -105,6 +120,25 @@ public class IBTableModelListener implements TableModelListener {
 
         IBCustomTable.INSTANCE.getPane().hideColumns();
 
+    }
+
+    private void updateAllAffectedNetLiqData(Double netLiq) {
+        IBTableModel model = IBCustomTable.INSTANCE.getModel();
+        if(model.getRowCount() == 0)
+            return;
+        for(int i = 0; i < model.getRowCount(); i++) {
+            Double margin = (Double) model.getValueAt(i, MARGIN.ordinal());
+            Double perOfPort = calcPerOfPort(margin, netLiq);
+            Double kcPerPort = (Double) model.getValueAt(i, KCPERPORT.ordinal());
+            model.setValueAt(perOfPort, i, PEROFPORT.ordinal());
+            Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
+            model.setValueAt(kcMaxLoss, i, KCMAXLOSS.ordinal());
+            Double entryDol = (Double) model.getValueAt(i, ENTRYDOL.ordinal());
+            Double kcQty = calculateKcQty(kcMaxLoss, entryDol , (Double) model.getValueAt(i, KCEDGE.ordinal()));
+            model.setValueAt(kcQty, i, KCQTY.ordinal());
+            Double position = (Double) model.getValueAt(i, QTY.ordinal());
+            model.setValueAt(kcQty - position, i, QTYOPENCLOSE.ordinal());
+        }
     }
 
     public void updateCell(Object o, int row, int col) {

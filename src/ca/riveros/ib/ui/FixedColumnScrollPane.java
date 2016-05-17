@@ -131,4 +131,8 @@ public class FixedColumnScrollPane extends JScrollPane {
         scrollViewTable.getColumnModel().getColumn(contractId - 1).setMinWidth(0);
         scrollViewTable.getColumnModel().getColumn(contractId - 1).setMaxWidth(0);
     }
+
+    public JTable getScrollViewTable() {
+        return scrollViewTable;
+    }
 }

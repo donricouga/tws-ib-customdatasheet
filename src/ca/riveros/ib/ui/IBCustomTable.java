@@ -9,23 +9,17 @@ import com.ib.controller.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import static ca.riveros.ib.util.TableColumnNames.PERPL;
 import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
-import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
 
@@ -390,7 +384,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     public Double getAccountNetLiq() {
-        return Double.valueOf(Util.formatString(accountNetLiq.getText()));
+        Double netliq = Util.formatString(accountNetLiq.getText());
+        return netliq;
     }
 
     public void setAccountNetLiq(Double accountNetLiq) {
