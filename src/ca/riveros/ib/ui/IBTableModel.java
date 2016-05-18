@@ -72,7 +72,7 @@ public class IBTableModel extends DefaultTableModel {
             for(int i = 0; i < vector.size(); i++) {
                 Object o = vector.get(i);
                 if(o != null) {
-                    super.setValueAt(o, rowIndex, i);
+                    updateCell(o, rowIndex, i);
                 }
             }
         }
@@ -164,5 +164,14 @@ public class IBTableModel extends DefaultTableModel {
 
     public void setMkDataHandlersMap(ConcurrentHashMap<MktDataHandler, Integer> mkDataHandlersMap) {
         this.mkDataHandlersMap = mkDataHandlersMap;
+    }
+
+    public void updateCell(Object o, int row, int col) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                IBCustomTable.INSTANCE.getModel().setValueAt(o, row, col);
+            }
+        });
     }
 }

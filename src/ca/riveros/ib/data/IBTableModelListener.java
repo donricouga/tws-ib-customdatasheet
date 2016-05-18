@@ -122,7 +122,7 @@ public class IBTableModelListener implements TableModelListener {
 
     }
 
-    private void updateAllAffectedNetLiqData(Double netLiq) {
+    /*private void updateAllAffectedNetLiqData(Double netLiq) {
         IBTableModel model = IBCustomTable.INSTANCE.getModel();
         if(model.getRowCount() == 0)
             return;
@@ -139,7 +139,7 @@ public class IBTableModelListener implements TableModelListener {
             Double position = (Double) model.getValueAt(i, QTY.ordinal());
             model.setValueAt(kcQty - position, i, QTYOPENCLOSE.ordinal());
         }
-    }
+    } */
 
     public void updateCell(Object o, int row, int col) {
         SwingUtilities.invokeLater(new Runnable() {
