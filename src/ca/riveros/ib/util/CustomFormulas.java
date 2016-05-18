@@ -1,17 +1,9 @@
 package ca.riveros.ib.util;
 
-import java.math.BigDecimal;
-
 /**
  * Created by rriveros on 3/15/16.
  */
 public class CustomFormulas {
-
-    public static double calcPositionPerOfNetLiq(double marginInitialChange, double netLiq) {
-        if (netLiq == 0)
-            return 0;
-        return (marginInitialChange / netLiq);
-    }
 
     public static double calcClosingPositionForProfit(double position, double avgCost, double mid) {
         if(avgCost == 0) return 0;
@@ -21,7 +13,7 @@ public class CustomFormulas {
         }
         return (mid - avgCost) / avgCost;
     }
-    
+
     public static double calcKCTakeProfitDol(double avgCost, double kcProfitPer) {
         return avgCost * (1 - kcProfitPer);
     }

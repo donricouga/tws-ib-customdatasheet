@@ -30,9 +30,36 @@ public class IBTableModelListener implements TableModelListener {
 
         Double netLiq = IBCustomTable.INSTANCE.getAccountNetLiq();
 
-        //TODO Tomorrow distinguish between UPDATE AND INSERT!
         if(e.getType() == TableModelEvent.INSERT) {
-            System.out.println("NEW ROWS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Double position = (Double) model.getValueAt(row, QTY.ordinal());
+            Double mid = (Double) model.getValueAt(row, MID.ordinal());
+            Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
+            Double margin = (Double) model.getValueAt(row, MARGIN.ordinal());
+            Double profitPer = (Double) model.getValueAt(row, PROFITPER.ordinal());
+            Double probProf = (Double) model.getValueAt(row, PROBPROFIT.ordinal());
+            Double kcEdge = (Double) model.getValueAt(row, KCEDGE.ordinal());
+            Double kcPerPort = (Double) model.getValueAt(row,KCPERPORT.ordinal());
+
+            Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
+            Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, profitPer);
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, kcEdge);
+            Double kcNetProfitDol = calcKCNetProfitDol(avgCost, kcTakeProfitDol);
+            Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
+            Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
+            Double perOfPort = calcPerOfPort(margin, netLiq);
+            Double kcLossPer = calcKCLossPer(profitPer, probProf, kcEdge);
+            Double kcQty = calculateKcQty(kcMaxLoss, avgCost, kcEdge);
+
+            updateCell(perPL, row, PERPL.ordinal());
+            updateCell(kcTakeProfitDol, row, KCTAKEPROFITDOL.ordinal());
+            updateCell(kcTakeLossDol, row, KCTAKELOSSDOL.ordinal());
+            updateCell(kcNetProfitDol, row, KCNETPROFITDOL.ordinal());
+            updateCell(kcNetLossDol, row, KCNETLOSSDOL.ordinal());
+            updateCell(kcMaxLoss, row, KCMAXLOSS.ordinal());
+            updateCell(perOfPort, row, PEROFPORT.ordinal());
+            updateCell(kcLossPer, row, KCLOSSPER.ordinal());
+            updateCell(kcQty, row, KCQTY.ordinal());
+
         }
 
         if(col == ENTRYDOL.ordinal()) {
@@ -86,11 +113,6 @@ public class IBTableModelListener implements TableModelListener {
             PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, margin);
 
         }
-
-        //We use -1 for column because at the beginning when populating all the rows, column is unavailable.
-        /*else if (col == -1) {
-            updateAllAffectedNetLiqData(netLiq);
-        }*/
 
         else if(col == PROFITPER.ordinal()) {
             Double profitPer = (Double) model.getValueAt(row, PROFITPER.ordinal());
