@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
+import static ca.riveros.ib.util.TableColumnNames.REALPNL;
 import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
 
 /**
@@ -28,15 +29,13 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
     protected void setValue(Object v) {
         // Allow superclass to set the value.
         super.setValue(v);
-
-        IBTableModel tableModel = IBCustomTable.INSTANCE.getModel();
-        Double unrealizedPNL = (Double) tableModel.getValueAt(row, UNREALPNL.ordinal());
-
-
-        if (unrealizedPNL > 0 )
-            setBackground(Util.OK_GREEN);
-        else if(unrealizedPNL < 0) {
-            setBackground(Util.WARNING_RED);
+        Double value = (Double) v;
+        if(col == UNREALPNL.ordinal() - 1 || col == REALPNL.ordinal() - 1) {
+            if (value > 0)
+                setBackground(Util.OK_GREEN);
+            else if (value < 0)
+                setBackground(Util.WARNING_RED);
         }
+
     }
 }

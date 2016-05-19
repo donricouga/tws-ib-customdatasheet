@@ -19,6 +19,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import static ca.riveros.ib.util.TableColumnNames.PERPL;
+import static ca.riveros.ib.util.TableColumnNames.REALPNL;
 import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
@@ -90,8 +91,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
         //Create a Container
         Container cp = frame.getContentPane();
-        cp.add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), BorderLayout.CENTER);
+        //cp.add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                //JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), BorderLayout.CENTER);
 
         //Create a combobox
         //Here we create a combo box that hides the rows that aren't relevant
@@ -303,10 +304,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     private void addRenderers() {
-        int closPosProfIdx = PERPL.ordinal();
-        int uPnlIdx = UNREALPNL.ordinal();
         //table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
-        table.getColumnModel().getColumn(uPnlIdx).setCellRenderer(new UnPNLRenderer());
+        table.getColumnModel().getColumn(UNREALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
+        table.getColumnModel().getColumn(REALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
 
         for(int i = 0; i < TableColumnNames.editableCellsList.size(); i++) {
             table.getColumnModel().getColumn(TableColumnNames.editableCellsList.get(i)).setCellRenderer(new ManualColumnsRenderer());

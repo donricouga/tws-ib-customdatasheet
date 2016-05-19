@@ -2,7 +2,6 @@ package ca.riveros.ib.data;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
-import ca.riveros.ib.util.CustomFormulas;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -140,7 +139,7 @@ public class IBTableModelListener implements TableModelListener {
                 PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, probProfit);
         }
 
-        IBCustomTable.INSTANCE.getPane().hideColumns();
+        IBCustomTable.INSTANCE.getPane().setDefaultColumnSize();
 
     }
 

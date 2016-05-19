@@ -20,11 +20,11 @@ public enum TableColumnNames {
     UNREALPNL(6,"Unreal P/L"),
     REALPNL(7,"Real P/L"),
     PEROFPORT(8,"% of Port"),
-    KCPERPORT(9,"KC % Port"),  //editable
-    MARGIN(10,"Margin"),
-    PROFITPER(11, "Profit %"),  //editable
-    LOSSPER(12, "Loss %"), //editable
-    PROBPROFIT(13, "Prob. Profit"), //editable
+    MARGIN(9,"Margin"), //editable
+    PROBPROFIT(10, "Prob. Profit"), //editable
+    KCPERPORT(11,"KC % Port"),  //editable
+    PROFITPER(12, "Profit %"),  //editable
+    LOSSPER(13, "Loss %"), //editable
     KCEDGE(14, "KC Edge"), //editable
     PERPL(15, "% P/L"),
     KCPROFITPER(16,"KC Profit %"),
