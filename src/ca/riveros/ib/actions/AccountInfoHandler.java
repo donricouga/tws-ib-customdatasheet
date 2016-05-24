@@ -129,10 +129,10 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
             v.set(REALPNL.ordinal(), position.realPnl());
             v.set(MARGIN.ordinal(), PersistentFields.getValue(position.account(), position.conid(), MARGIN.ordinal()));
             v.set(PROFITPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), PROFITPER.ordinal(), 0.57));
-            v.set(LOSSPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), LOSSPER.ordinal(), .26));
+            v.set(LOSSPER.ordinal(), PersistentFields.getValue(position.account(), position.conid(), LOSSPER.ordinal(), 2.2));
             v.set(PROBPROFIT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), PROBPROFIT.ordinal(),0.91));
-            v.set(KCEDGE.ordinal(), PersistentFields.getValue(position.account(), position.conid(), KCEDGE.ordinal(), 2.0));
-            v.set(KCPERPORT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), KCPERPORT.ordinal(),0.15));
+            v.set(KCEDGE.ordinal(), PersistentFields.getValue(position.account(), position.conid(), KCEDGE.ordinal(), 0.1));
+            v.set(KCPERPORT.ordinal(),PersistentFields.getValue(position.account(), position.conid(), KCPERPORT.ordinal(),0.015));
             v.set(CONTRACTID.ordinal(),position.conid());
             model.addOrUpdateRow(position.contract(), v);
         }

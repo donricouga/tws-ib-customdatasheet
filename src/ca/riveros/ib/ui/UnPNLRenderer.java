@@ -36,6 +36,7 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
             else if (value < 0)
                 setBackground(Util.WARNING_RED);
         }
+        super.setHorizontalAlignment(SwingConstants.RIGHT);
 
     }
 }

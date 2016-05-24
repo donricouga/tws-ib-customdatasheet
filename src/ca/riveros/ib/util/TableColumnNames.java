@@ -17,24 +17,24 @@ public enum TableColumnNames {
     QTYOPENCLOSE(3, "Qty. Open/Close"),
     ENTRYDOL(4,"Entry $"),
     MID(5,"Mid"), //CHANGE NUMBERS
-    UNREALPNL(6,"Unreal P/L"),
-    REALPNL(7,"Real P/L"),
-    PEROFPORT(8,"% of Port"),
-    MARGIN(9,"Margin"), //editable
-    PROBPROFIT(10, "Prob. Profit"), //editable
-    KCPERPORT(11,"KC % Port"),  //editable
-    PROFITPER(12, "Profit %"),  //editable
-    LOSSPER(13, "Loss %"), //editable
-    KCEDGE(14, "KC Edge"), //editable
-    PERPL(15, "% P/L"),
-    KCPROFITPER(16,"KC Profit %"),
-    KCLOSSPER(17, "KC Loss %"), //"<html><center>KC<br>Loss Level"
-    KCTAKEPROFITDOL(18, "KC Take Profit $"),
-    KCTAKELOSSDOL(19, "KC Take Loss $"),
-    KCNETPROFITDOL(20, "KC Net Profit $"),
-    KCNETLOSSDOL(21,"KC Net Loss $"),
-    KCMAXLOSS(22, "KC Max Loss"),
-    MARKETDOL(23,"Market $"),
+    MARKETDOL(6,"Market $"),
+    UNREALPNL(7,"Unreal P/L"),
+    REALPNL(8,"Real P/L"),
+    PEROFPORT(9,"% of Port"),
+    PERPL(10, "% P/L"),
+    MARGIN(11,"Margin"), //editable
+    PROBPROFIT(12, "Prob. Profit"), //editable
+    KCPERPORT(13,"KC % Port"),  //editable
+    PROFITPER(14, "Profit %"),  //editable
+    LOSSPER(15, "Loss %"), //editable
+    KCEDGE(16, "KC Edge"), //editable
+    KCPROFITPER(17,"KC Profit %"),
+    KCLOSSPER(18, "KC Loss %"), //"<html><center>KC<br>Loss Level"
+    KCTAKEPROFITDOL(19, "KC Take Profit $"),
+    KCTAKELOSSDOL(20, "KC Take Loss $"),
+    KCNETPROFITDOL(21, "KC Net Profit $"),
+    KCNETLOSSDOL(22,"KC Net Loss $"),
+    KCMAXLOSS(23, "KC Max Loss"),
     NOTIONAL(24,"Notional"),
     DELTA(25, "Delta"),
     IMPVOLPER(26, "ImpVol %"),

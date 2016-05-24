@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
+import static ca.riveros.ib.util.TableColumnNames.MARGIN;
+import static ca.riveros.ib.util.TableColumnNames.PROBPROFIT;
 import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
 
 /**
@@ -11,8 +13,11 @@ import static ca.riveros.ib.util.TableColumnNames.getIndexByName;
  */
 public class ManualColumnsRenderer extends DefaultTableCellRenderer {
 
+    private int col;
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        this.col = col;
 
         // Allow superclass to return rendering component.
         return super.getTableCellRendererComponent(table, value,
@@ -23,6 +28,10 @@ public class ManualColumnsRenderer extends DefaultTableCellRenderer {
     protected void setValue(Object v) {
         // Allow superclass to set the value.
         super.setValue(v);
-        setBackground(Color.YELLOW);
+        if(col == MARGIN.ordinal() - 1 || col == PROBPROFIT.ordinal() - 1)
+            setBackground(Color.ORANGE);
+        else
+            setBackground(Color.YELLOW);
+        super.setHorizontalAlignment(SwingConstants.RIGHT);
     }
 }

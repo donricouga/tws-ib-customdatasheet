@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import java.math.BigDecimal;
+
 import static ca.riveros.ib.util.TableColumnNames.*;
 import static ca.riveros.ib.util.CustomFormulas.*;
 /**
@@ -57,7 +59,7 @@ public class IBTableModelListener implements TableModelListener {
             updateCell(kcMaxLoss, row, KCMAXLOSS.ordinal());
             updateCell(perOfPort, row, PEROFPORT.ordinal());
             updateCell(kcLossPer, row, KCLOSSPER.ordinal());
-            updateCell(kcQty, row, KCQTY.ordinal());
+            updateCell(setPrecision(kcQty, 2), row, KCQTY.ordinal());
 
         }
 
@@ -101,7 +103,7 @@ public class IBTableModelListener implements TableModelListener {
             model.setValueAt(kcQty, row, KCQTY.ordinal());
 
             //Which also affects Qty Open/Close
-            model.setValueAt(kcQty - position, row, QTYOPENCLOSE.ordinal());
+            model.setValueAt(setPrecision(kcQty - position, 2), row, QTYOPENCLOSE.ordinal());
 
         }
 
@@ -143,24 +145,10 @@ public class IBTableModelListener implements TableModelListener {
 
     }
 
-    /*private void updateAllAffectedNetLiqData(Double netLiq) {
-        IBTableModel model = IBCustomTable.INSTANCE.getModel();
-        if(model.getRowCount() == 0)
-            return;
-        for(int i = 0; i < model.getRowCount(); i++) {
-            Double margin = (Double) model.getValueAt(i, MARGIN.ordinal());
-            Double perOfPort = calcPerOfPort(margin, netLiq);
-            Double kcPerPort = (Double) model.getValueAt(i, KCPERPORT.ordinal());
-            model.setValueAt(perOfPort, i, PEROFPORT.ordinal());
-            Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
-            model.setValueAt(kcMaxLoss, i, KCMAXLOSS.ordinal());
-            Double entryDol = (Double) model.getValueAt(i, ENTRYDOL.ordinal());
-            Double kcQty = calculateKcQty(kcMaxLoss, entryDol , (Double) model.getValueAt(i, KCEDGE.ordinal()));
-            model.setValueAt(kcQty, i, KCQTY.ordinal());
-            Double position = (Double) model.getValueAt(i, QTY.ordinal());
-            model.setValueAt(kcQty - position, i, QTYOPENCLOSE.ordinal());
-        }
-    } */
+    private Double setPrecision(Double number, int prec) {
+        return new BigDecimal(number).setScale(prec, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
 
     public void updateCell(Object o, int row, int col) {
         SwingUtilities.invokeLater(new Runnable() {
