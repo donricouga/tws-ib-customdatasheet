@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-import static ca.riveros.ib.util.TableColumnNames.REALPNL;
-import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
+import static ca.riveros.ib.util.TableColumnNames.*;
 
 /**
  * Created by ricardo on 4/8/16.
@@ -36,6 +35,10 @@ public class UnPNLRenderer extends DefaultTableCellRenderer {
             else if (value < 0)
                 setBackground(Util.WARNING_RED);
         }
+        if(col == KCTAKEPROFITDOL.ordinal() - 1)
+            setBackground(Util.OK_GREEN);
+        if(col == KCTAKELOSSDOL.ordinal() - 1)
+            setBackground(Util.WARNING_RED);
         super.setHorizontalAlignment(SwingConstants.RIGHT);
 
     }

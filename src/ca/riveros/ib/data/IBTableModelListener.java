@@ -2,6 +2,7 @@ package ca.riveros.ib.data;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
+import ca.riveros.ib.ui.Util;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -59,7 +60,7 @@ public class IBTableModelListener implements TableModelListener {
             updateCell(kcMaxLoss, row, KCMAXLOSS.ordinal());
             updateCell(perOfPort, row, PEROFPORT.ordinal());
             updateCell(kcLossPer, row, KCLOSSPER.ordinal());
-            updateCell(setPrecision(kcQty, 2), row, KCQTY.ordinal());
+            updateCell(kcQty, row, KCQTY.ordinal());
 
         }
 
@@ -103,7 +104,7 @@ public class IBTableModelListener implements TableModelListener {
             model.setValueAt(kcQty, row, KCQTY.ordinal());
 
             //Which also affects Qty Open/Close
-            model.setValueAt(setPrecision(kcQty - position, 2), row, QTYOPENCLOSE.ordinal());
+            model.setValueAt(kcQty - position, row, QTYOPENCLOSE.ordinal());
 
         }
 
@@ -145,16 +146,15 @@ public class IBTableModelListener implements TableModelListener {
 
     }
 
-    private Double setPrecision(Double number, int prec) {
-        return new BigDecimal(number).setScale(prec, BigDecimal.ROUND_HALF_UP).doubleValue();
-    }
-
 
     public void updateCell(Object o, int row, int col) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                IBCustomTable.INSTANCE.getModel().setValueAt(o, row, col);
+                Double val = 0.0;
+                if(o instanceof Double)
+                    val = Util.setPrecision((Double) o, 2);
+                IBCustomTable.INSTANCE.getModel().setValueAt(val, row, col);
             }
         });
     }

@@ -5,6 +5,7 @@ import com.ib.controller.NewContract;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.text.*;
 import java.util.Date;
 import java.util.Locale;
@@ -89,6 +90,10 @@ public class Util {
     public static String formatDouble(Double d) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         return nf.format(d);
+    }
+
+    public static Double setPrecision(Double number, int prec) {
+        return new BigDecimal(number).setScale(prec, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     /**

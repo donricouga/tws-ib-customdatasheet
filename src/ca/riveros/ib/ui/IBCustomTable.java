@@ -18,9 +18,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import static ca.riveros.ib.util.TableColumnNames.PERPL;
-import static ca.riveros.ib.util.TableColumnNames.REALPNL;
-import static ca.riveros.ib.util.TableColumnNames.UNREALPNL;
+import static ca.riveros.ib.util.TableColumnNames.*;
 
 public class IBCustomTable implements ApiController.IConnectionHandler{
 
@@ -71,10 +69,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         JFrame frame = new JFrame("Custom IB Data Table");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //set alternate Row Color
-       /* UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        if (defaults.get("Table.alternateRowColor") == null)
-            defaults.put("Table.alternateRowColor", new Color(240, 240, 240));*/
+        setUIFont (new javax.swing.plaf.FontUIResource(new Font("MS Mincho",Font.PLAIN, 17)));
 
         model = createTableModel();
 
@@ -139,6 +134,16 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //Request account summary
         INSTANCE.controller().reqAccountSummary("All", AccountSummaryTag.values(), new AccountSummaryHandler());
 
+    }
+
+    public static void setUIFont (javax.swing.plaf.FontUIResource f){
+        java.util.Enumeration keys = UIManager.getLookAndFeelDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get (key);
+            if (value != null && value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put (key, f);
+        }
     }
 
     public static void main(String[] args) {
@@ -307,6 +312,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         //table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
         table.getColumnModel().getColumn(UNREALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
         table.getColumnModel().getColumn(REALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
+        table.getColumnModel().getColumn(KCTAKEPROFITDOL.ordinal()).setCellRenderer(new UnPNLRenderer());
+        table.getColumnModel().getColumn(KCTAKELOSSDOL.ordinal()).setCellRenderer(new UnPNLRenderer());
 
         for(int i = 0; i < TableColumnNames.editableCellsList.size(); i++) {
             table.getColumnModel().getColumn(TableColumnNames.editableCellsList.get(i)).setCellRenderer(new ManualColumnsRenderer());

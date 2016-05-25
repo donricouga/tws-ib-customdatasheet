@@ -50,6 +50,8 @@ public class IBTableModel extends DefaultTableModel {
      * @param vector
      */
     public void addOrUpdateRow(NewContract newContract, Vector vector) {
+        //First set precision
+        setPrecisionOnVector(vector);
 
         //Case Insert a brand new Row!
         int contractId = newContract.conid();
@@ -77,6 +79,16 @@ public class IBTableModel extends DefaultTableModel {
             }
         }
 
+    }
+
+    private void setPrecisionOnVector(Vector v) {
+        for(int i = 0; i < v.size(); i++) {
+            Object o = v.get(i);
+            if(o instanceof Double) {
+                Double val = (Double) o;
+                v.set(i,Util.setPrecision(val,2));
+            }
+        }
     }
 
     /**
