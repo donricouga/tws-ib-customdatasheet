@@ -66,7 +66,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         controller().connect("127.0.0.1", 7497, 0);
 
         //Then Create the GUIx
-        JFrame frame = new JFrame("Custom IB Data Table");
+        JFrame frame = new JFrame("IB Data Table v1.0");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setUIFont (new javax.swing.plaf.FontUIResource(new Font("MS Mincho",Font.PLAIN, 17)));
