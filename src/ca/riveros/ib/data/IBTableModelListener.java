@@ -3,6 +3,7 @@ package ca.riveros.ib.data;
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
 import ca.riveros.ib.ui.Util;
+import ca.riveros.ib.util.TableColumnNames;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -44,12 +45,12 @@ public class IBTableModelListener implements TableModelListener {
 
             Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
             Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, profitPer);
-            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, kcEdge);
             Double kcNetProfitDol = calcKCNetProfitDol(avgCost, kcTakeProfitDol);
-            Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
             Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
             Double perOfPort = calcPerOfPort(margin, netLiq);
             Double kcLossPer = calcKCLossPer(profitPer, probProf, kcEdge);
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, kcLossPer);
+            Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
             Double kcQty = calculateKcQty(kcMaxLoss, avgCost, kcEdge);
 
             updateCell(perPL, row, PERPL.ordinal());
@@ -70,7 +71,7 @@ public class IBTableModelListener implements TableModelListener {
             Double mid = (Double) model.getValueAt(row, MID.ordinal());
             Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
             Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, (Double) model.getValueAt(row, KCPROFITPER.ordinal()));
-            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, (Double) model.getValueAt(row, KCEDGE.ordinal()));
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, (Double) model.getValueAt(row, KCLOSSPER.ordinal()));
             Double kcNetProfitDol = calcKCNetProfitDol(avgCost, kcTakeProfitDol);
             Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
 
@@ -101,10 +102,10 @@ public class IBTableModelListener implements TableModelListener {
 
             //Also calculate KC-Qty
             Double kcQty = calculateKcQty(kcMaxLoss, avgCost, kcEdge);
-            model.setValueAt(kcQty, row, KCQTY.ordinal());
+            updateCell(kcQty, row, KCQTY.ordinal());
 
             //Which also affects Qty Open/Close
-            model.setValueAt(kcQty - position, row, QTYOPENCLOSE.ordinal());
+            updateCell(kcQty - position, row, QTYOPENCLOSE.ordinal());
 
         }
 
@@ -134,8 +135,6 @@ public class IBTableModelListener implements TableModelListener {
             updateCell(calcKCLossPer(kcProfitPer,probProfit, kcEdge), row, KCLOSSPER.ordinal());
 
             if(col == KCEDGE.ordinal()) {
-                Double avgCost = (Double) model.getValueAt(row, ENTRYDOL.ordinal());
-                updateCell(calcKCTakeLossDol(avgCost,kcEdge), row, KCTAKELOSSDOL.ordinal());
                 PersistentFields.setValue(account, (Integer) model.getValueAt(row, CONTRACTID.ordinal()), col, kcEdge);
             }
             if(col == PROBPROFIT.ordinal())
@@ -152,8 +151,12 @@ public class IBTableModelListener implements TableModelListener {
             @Override
             public void run() {
                 Double val = 0.0;
-                if(o instanceof Double)
-                    val = Util.setPrecision((Double) o, 2);
+                if(o instanceof Double && !TableColumnNames.editableCellsList.contains(col)) {
+                    if(col == KCQTY.ordinal() || col == QTYOPENCLOSE.ordinal())
+                        val = Util.setPrecision((Double) o, 0);
+                    else
+                        val = Util.setPrecision((Double) o, 2);
+                }
                 IBCustomTable.INSTANCE.getModel().setValueAt(val, row, col);
             }
         });

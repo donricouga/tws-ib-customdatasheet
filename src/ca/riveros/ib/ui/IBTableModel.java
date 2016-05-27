@@ -84,7 +84,7 @@ public class IBTableModel extends DefaultTableModel {
     private void setPrecisionOnVector(Vector v) {
         for(int i = 0; i < v.size(); i++) {
             Object o = v.get(i);
-            if(o instanceof Double) {
+            if(o instanceof Double && !TableColumnNames.editableCellsList.contains(i)) {
                 Double val = (Double) o;
                 v.set(i,Util.setPrecision(val,2));
             }

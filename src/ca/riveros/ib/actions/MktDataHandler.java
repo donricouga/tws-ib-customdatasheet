@@ -2,6 +2,7 @@ package ca.riveros.ib.actions;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
+import ca.riveros.ib.ui.Util;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.controller.ApiController;
 import com.ib.controller.NewTickType;
@@ -69,8 +70,8 @@ public class MktDataHandler implements ApiController.IOptHandler {
             if (contractId == null)
                 return;
             Integer row = model.getDataMap().get(contractId);
-            model.setValueAt(delta * 100, row, TableColumnNames.DELTA.ordinal());
-            model.setValueAt(impliedVol * 100, row, TableColumnNames.IMPVOLPER.ordinal());
+            model.setValueAt(Util.setPrecision(delta * 100, 2), row, TableColumnNames.DELTA.ordinal());
+            model.setValueAt(Util.setPrecision(impliedVol * 100, 2), row, TableColumnNames.IMPVOLPER.ordinal());
         }
 
     }
