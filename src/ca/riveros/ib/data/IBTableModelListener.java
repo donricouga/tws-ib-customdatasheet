@@ -42,6 +42,7 @@ public class IBTableModelListener implements TableModelListener {
             Double probProf = (Double) model.getValueAt(row, PROBPROFIT.ordinal());
             Double kcEdge = (Double) model.getValueAt(row, KCEDGE.ordinal());
             Double kcPerPort = (Double) model.getValueAt(row,KCPERPORT.ordinal());
+            Double lossPer = (Double) model.getValueAt(row, LOSSPER.ordinal());
 
             Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
             Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, profitPer);
@@ -49,7 +50,7 @@ public class IBTableModelListener implements TableModelListener {
             Double kcMaxLoss = calcKCMaxLoss(netLiq, kcPerPort);
             Double perOfPort = calcPerOfPort(margin, netLiq);
             Double kcLossPer = calcKCLossPer(profitPer, probProf, kcEdge);
-            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, kcLossPer);
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, lossPer);
             Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
             Double kcQty = calculateKcQty(kcMaxLoss, avgCost, kcEdge);
 
@@ -62,6 +63,7 @@ public class IBTableModelListener implements TableModelListener {
             updateCell(perOfPort, row, PEROFPORT.ordinal());
             updateCell(kcLossPer, row, KCLOSSPER.ordinal());
             updateCell(kcQty, row, KCQTY.ordinal());
+            updateCell(profitPer, row, KCPROFITPER.ordinal());
 
         }
 
@@ -71,7 +73,7 @@ public class IBTableModelListener implements TableModelListener {
             Double mid = (Double) model.getValueAt(row, MID.ordinal());
             Double perPL = calcClosingPositionForProfit(position, avgCost, mid);
             Double kcTakeProfitDol = calcKCTakeProfitDol(avgCost, (Double) model.getValueAt(row, KCPROFITPER.ordinal()));
-            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, (Double) model.getValueAt(row, KCLOSSPER.ordinal()));
+            Double kcTakeLossDol = calcKCTakeLossDol(avgCost, (Double) model.getValueAt(row, LOSSPER.ordinal()));
             Double kcNetProfitDol = calcKCNetProfitDol(avgCost, kcTakeProfitDol);
             Double kcNetLossDol = calcKCNetLossDol(avgCost, kcTakeLossDol);
 

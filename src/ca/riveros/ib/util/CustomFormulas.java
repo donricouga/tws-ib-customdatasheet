@@ -18,8 +18,8 @@ public class CustomFormulas {
         return avgCost * (1 - kcProfitPer);
     }
 
-    public static double calcKCTakeLossDol(double avgCost, double kcLossPer) {
-            return avgCost * kcLossPer;
+    public static double calcKCTakeLossDol(double avgCost, double lossPer) {
+            return avgCost * lossPer;
         }
 
     public static double calcKCNetProfitDol(double avgCost, double kcTakeProfitDol) {
