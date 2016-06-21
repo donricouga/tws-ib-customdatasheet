@@ -4,9 +4,9 @@ import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
 import ca.riveros.ib.ui.Util;
 import ca.riveros.ib.util.TableColumnNames;
+import com.ib.client.TickType;
+import com.ib.client.Types;
 import com.ib.controller.ApiController;
-import com.ib.controller.NewTickType;
-import com.ib.controller.Types;
 
 import javax.swing.*;
 
@@ -21,7 +21,7 @@ public class MktDataHandler implements ApiController.IOptHandler {
     private static final String ASK_PRICE = "ASK";
 
     @Override
-    public void tickPrice(NewTickType tickType, double price, int canAutoExecute) {
+    public void tickPrice(TickType tickType, double price, int canAutoExecute) {
         System.out.println("BLAH TICKTYPE : " + tickType + " PRICE IS " + price);
         if(BID_PRICE.equals(tickType.name()) || ASK_PRICE.equals(tickType.name())) {
             System.out.println("TickType : " + tickType.name() + " Price : " + price + " FOR HANDLER " + handlerId);
@@ -55,15 +55,15 @@ public class MktDataHandler implements ApiController.IOptHandler {
 
     }
 
-    @Override public void tickSize(NewTickType tickType, int size){}
-    @Override public void tickString(NewTickType tickType, String value){}
+    @Override public void tickSize(TickType tickType, int size){}
+    @Override public void tickString(TickType tickType, String value){}
     @Override public void tickSnapshotEnd(){}
     @Override public void marketDataType(Types.MktDataType marketDataType){}
     @Override
-    public void tickOptionComputation(NewTickType tickType, double impliedVol, double delta, double optPrice,
+    public void tickOptionComputation(TickType tickType, double impliedVol, double delta, double optPrice,
                                       double pvDividend, double gamma, double vega, double theta, double undPrice) {
         //System.out.println("TickType Comp : " + tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
-        if(NewTickType.ASK_OPTION.equals(tickType)) {
+        if(TickType.ASK_OPTION.equals(tickType)) {
             System.out.println(tickType.name() + " DELTA : " + delta + " optPrice : " + optPrice);
             IBTableModel model = IBCustomTable.INSTANCE.getModel();
             Integer contractId = model.getMkDataHandlersMap().get(MktDataHandler.this);

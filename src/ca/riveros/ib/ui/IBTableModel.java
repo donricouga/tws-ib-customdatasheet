@@ -4,7 +4,7 @@ import ca.riveros.ib.actions.ContractDetailsHandler;
 import ca.riveros.ib.actions.MktDataHandler;
 import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
-import com.ib.controller.NewContract;
+import com.ib.client.Contract;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -49,7 +49,7 @@ public class IBTableModel extends DefaultTableModel {
      * Adds or updates a row in the model. Needs to be called in the Swing Event Dispatcher Thread.
      * @param vector
      */
-    public void addOrUpdateRow(NewContract newContract, Vector vector) {
+    public void addOrUpdateRow(Contract newContract, Vector vector) {
         //First set precision
         setPrecisionOnVector(vector);
 

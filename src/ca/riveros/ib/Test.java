@@ -17,15 +17,12 @@ public class Test implements EWrapper
     private EClientSocket client = null;
 
     private int tickerId = 0;
-    private int summaryId = 0;
-
-    private List<String> keyNames = new ArrayList<String>(100);
 
     public Test ()
     {
         System.out.println("CREATING RTAccountUpdates ...");
         // Create a new EClientSocket object
-        client = new EClientSocket (this);
+        client = new EClientSocket (this, new EJavaSignal());
         // Connect to the TWS or IB Gateway application
         // Leave null for localhost
         // Port Number (should match TWS/IB Gateway configuration
@@ -67,16 +64,16 @@ public class Test implements EWrapper
 
     @Override public void bondContractDetails(int reqId, ContractDetails contractDetails){}
     @Override public void contractDetails(int reqId, ContractDetails contractDetails) {
-        System.out.println("------------------ Contract Details -----------------");
-        System.out.println("Symbol : " + contractDetails.m_summary.m_symbol);
-        System.out.println("Exchange " + contractDetails.m_summary.m_exchange);
-        System.out.println("Contract Id " + contractDetails.m_summary.m_conId);
-        if (contractDetails == null) {
-            System.out.println("NO CONTRACT DETAILS FOR REQID " + reqId);
-            return;
-        }
-        System.out.println("REQUESTING MKT DATA FOR REQID " + reqId);
-        client.reqMktData(reqId, contractDetails.m_summary, "", false, Collections.<TagValue>emptyList());
+//        System.out.println("------------------ Contract Details -----------------");
+//        System.out.println("Symbol : " + contractDetails.m_symbol);
+//        System.out.println("Exchange " + contractDetails.m_summary.m_exchange);
+//        System.out.println("Contract Id " + contractDetails.m_summary.m_conId);
+//        if (contractDetails == null) {
+//            System.out.println("NO CONTRACT DETAILS FOR REQID " + reqId);
+//            return;
+//        }
+//        System.out.println("REQUESTING MKT DATA FOR REQID " + reqId);
+//        client.reqMktData(reqId, contractDetails.m_summary, "", false, Collections.<TagValue>emptyList());
 
     }
     @Override public void contractDetailsEnd(int reqId){}
@@ -85,6 +82,17 @@ public class Test implements EWrapper
     @Override public void displayGroupList(int requestId, String contractInfo){}
     @Override public void displayGroupUpdated(int requestId, String contractInfo){}
     @Override public void verifyCompleted(boolean completed, String contractInfo){}
+
+    @Override
+    public void verifyAndAuthMessageAPI(String apiData, String xyzChallange) {
+
+    }
+
+    @Override
+    public void verifyAndAuthCompleted(boolean isSuccessful, String errorText) {
+
+    }
+
     @Override public void verifyMessageAPI(String message){}
     @Override public void execDetails(int orderId, Contract contract, Execution execution) {}
     @Override public void execDetailsEnd(int reqId) {}
@@ -95,7 +103,7 @@ public class Test implements EWrapper
         System.out.println("Received Managed Accounts " + accountsList);
     }
     @Override public void commissionReport(CommissionReport cr){}
-    @Override public void position(String account, Contract contract, int pos, double avgCost){
+    @Override public void position(String account, Contract contract, double pos, double avgCost){
         System.out.println("POSITION --> ACCOUNT : " + account + " Contract " + contract + " POS " + pos + " AvgCost " + avgCost);
     }
 
@@ -111,9 +119,7 @@ public class Test implements EWrapper
     @Override public void openOrder(int orderId, Contract contract, Order order,
                                     OrderState orderState){}
     @Override public void openOrderEnd(){}
-    @Override public void orderStatus(int orderId, String status, int filled,
-                                      int remaining, double avgFillPrice, int permId, int parentId,
-                                      double lastFillPrice, int clientId, String whyHeld){}
+
     @Override public void receiveFA(int faDataType, String xml){
         System.out.println("RECEIVED FA ....\n" + xml);
     }
@@ -122,7 +128,7 @@ public class Test implements EWrapper
                                       String projection, String legsStr){}
     @Override public void scannerDataEnd(int reqId){}
     @Override  public void scannerParameters(String xml){}
-    @Override public void deltaNeutralValidation(int reqId, UnderComp underComp){}
+    @Override public void deltaNeutralValidation(int reqId, DeltaNeutralContract underComp){}
     @Override public void updateAccountTime(String timeStamp)
     {
         //System.out.println("RECEIVED TIMESTAMP " + timeStamp);
@@ -142,9 +148,8 @@ public class Test implements EWrapper
     @Override  public void updateMktDepthL2(int symbolId, int position, String marketMaker, int operation, int side, double price, int size){}
     @Override public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange){}
 
-    @Override public void updatePortfolio(Contract contract, int position,
-                                          double marketPrice, double marketValue, double averageCost,
-                                          double unrealizedPNL, double realizedPNL, String accountName)
+    @Override public void updatePortfolio(Contract contract, double position, double marketPrice, double marketValue,
+                                          double averageCost, double unrealizedPNL, double realizedPNL, String accountName)
     {
 
        /* System.out.println("---------------------------- PORTFOLIO FEED ---------------------");
@@ -157,7 +162,7 @@ public class Test implements EWrapper
         System.out.println("UNREALIZED PNL : " + unrealizedPNL);
         System.out.println("ACCOUNT : " + accountName);
         System.out.println("--------------------------- END PORTFOLIO FEED -------------------");*/
-        System.out.println("SYMBOL : " + contract.m_symbol + " CONTRACT : " + contract.m_conId + " ACCOUNT " + accountName + " AT EXCHANGE " + contract.m_exchange);
+        System.out.println("SYMBOL : " + contract.symbol() + " CONTRACT : " + contract.conid() + " ACCOUNT " + accountName + " AT EXCHANGE " + contract.exchange());
         int temp = tickerId;
         client.reqContractDetails(temp, contract);
         tickerId++;
@@ -168,6 +173,42 @@ public class Test implements EWrapper
     @Override public void marketDataType(int reqId, int marketDataType){}
     @Override public void tickSnapshotEnd(int tickerId){}
     @Override public void connectionClosed(){}
+
+    @Override
+    public void connectAck() {
+
+    }
+
+    @Override
+    public void positionMulti(int reqId, String account, String modelCode, Contract contract, double pos, double avgCost) {
+
+    }
+
+    @Override
+    public void positionMultiEnd(int reqId) {
+
+    }
+
+    @Override
+    public void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value, String currency) {
+
+    }
+
+    @Override
+    public void accountUpdateMultiEnd(int reqId) {
+
+    }
+
+    @Override
+    public void securityDefinitionOptionalParameter(int reqId, String exchange, int underlyingConId, String tradingClass, String multiplier, Set<String> expirations, Set<Double> strikes) {
+
+    }
+
+    @Override
+    public void securityDefinitionOptionalParameterEnd(int reqId) {
+
+    }
+
     @Override public void realtimeBar (int reqId, long time, double open, double high,
                                        double low, double close, long volume, double wap, int count) {}
 
@@ -201,7 +242,7 @@ public class Test implements EWrapper
     @Override public void tickPrice(int orderId, int field, double price,int canAutoExecute)
     {
 
-        if(TickType.BID == field || TickType.ASK == field)
+        if(TickType.BID.index() == field || TickType.ASK.index() == field)
             System.out.println("Ticker ID " + orderId + " FIELD " + field + " PRICE " + price );
 
     }
@@ -218,16 +259,23 @@ public class Test implements EWrapper
     {
         //System.out.println("TICK EFP");
     }
+
+    @Override
+    public void orderStatus(int orderId, String status, double filled, double remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId, String whyHeld) {
+
+    }
+
     @Override public void tickGeneric(int symbolId, int tickType, double value)
     {
         //System.out.println("TICK GENERIC -> SymbolId : " + symbolId + " TickType : " + tickType + " Value : " + value);
     }
+
     @Override public void tickOptionComputation( int tickerId, int field,
                                                  double impliedVol, double delta, double optPrice,
                                                  double pvDividend, double gamma, double vega,
                                                  double theta, double undPrice)
     {
-        if(TickType.BID == field || TickType.ASK == field)
+        if(TickType.BID.index() == field || TickType.ASK.index() == field)
             System.out.println("Ticker ID " + tickerId + " FIELD " + field + " PRICE " + undPrice + " Delta " + delta);
     }
 

@@ -2,8 +2,8 @@ package ca.riveros.ib.ui;
 
 import ca.riveros.ib.data.PositionsKey;
 import ca.riveros.ib.util.TableColumnNames;
+import com.ib.client.Contract;
 import com.ib.controller.ApiController;
-import com.ib.controller.NewContract;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -55,7 +55,7 @@ public class PositionsDialog extends JDialog implements ApiController.IPositionH
     }
 
     @Override
-    public void position(String account, NewContract newContract, int position, double avgCost) {
+    public void position(String account, Contract newContract, double position, double avgCost) {
         System.out.println("Account " + account + " Contract " + newContract.toString() + " Pos " + position + " X " + avgCost);
         PositionsKey key = new PositionsKey(account, newContract.conid());
         if(posMap.containsKey(key)) {

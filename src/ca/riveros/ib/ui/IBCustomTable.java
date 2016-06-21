@@ -4,6 +4,7 @@ import ca.riveros.ib.actions.AccountInfoHandler;
 import ca.riveros.ib.actions.AccountSummaryHandler;
 import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
+import com.ib.client.Types;
 import com.ib.controller.*;
 
 import java.awt.*;
@@ -63,7 +64,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
 
     public void createAndShowGUI() {
         //Connect to IB TWS
-        controller().connect("127.0.0.1", 7497, 0);
+        controller().connect("127.0.0.1", 7497, 0, null);
 
         //Then Create the GUIx
         JFrame frame = new JFrame("IB Data Table v1.0");
@@ -178,6 +179,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         });
 
         controller().reqBulletins( true, new ApiController.IBulletinHandler() {
+
             @Override public void bulletin(int msgId, Types.NewsType newsType, String message, String exchange) {
                 String str = String.format( "Received bulletin:  type=%s  exchange=%s", newsType, exchange);
                 show( str);
@@ -386,7 +388,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         protected void onConnect() {
             int port = Integer.parseInt( m_port.getText() );
             int clientId = Integer.parseInt( m_clientId.getText() );
-            m_controller.connect( m_host.getText(), port, clientId);
+            m_controller.connect( m_host.getText(), port, clientId,null);
         }
     }
 

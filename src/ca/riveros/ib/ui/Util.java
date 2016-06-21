@@ -1,6 +1,6 @@
 package ca.riveros.ib.ui;
 
-import com.ib.controller.NewContract;
+import com.ib.client.Contract;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -108,11 +108,11 @@ public class Util {
      * @param contract
      * @return
      */
-    public static String generateContractName(NewContract contract) {
+    public static String generateContractName(Contract contract) {
         String symbol = contract.symbol();
         String secType = contract.secType().getApiString();
         String tradingClass = contract.tradingClass();
-        String expiry = contract.expiry();
+        String expiry = contract.lastTradeDateOrContractMonth();
         Double strike = contract.strike();
         String right = contract.right().getApiString(); //"None" is default
         String exchange = contract.exchange() == null ? "" : contract.exchange();

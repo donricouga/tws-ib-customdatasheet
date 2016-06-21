@@ -2,9 +2,9 @@ package ca.riveros.ib.actions;
 
 import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
+import com.ib.client.ContractDetails;
 import com.ib.controller.ApiConnection;
 import com.ib.controller.ApiController;
-import com.ib.controller.NewContractDetails;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class ContractDetailsHandler implements ApiController.IContractDetailsHan
     }
 
     @Override
-    public void contractDetails(ArrayList<NewContractDetails> list) {
+    public void contractDetails(ArrayList<ContractDetails> list) {
         System.out.println("Received Contract Details for Contract ID " + contractId);
         IBTableModel model = IBCustomTable.INSTANCE.getModel();
 

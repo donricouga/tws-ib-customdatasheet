@@ -5,8 +5,8 @@ import ca.riveros.ib.ui.IBCustomTable;
 import ca.riveros.ib.ui.IBTableModel;
 import ca.riveros.ib.ui.Util;
 import ca.riveros.ib.util.TableColumnNames;
+import com.ib.client.Contract;
 import com.ib.controller.ApiController;
-import com.ib.controller.NewContract;
 import com.ib.controller.Position;
 
 import javax.swing.*;
@@ -138,7 +138,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
         }
     }
 
-    private double calculateAvgCost(NewContract con, double averageCost) {
+    private double calculateAvgCost(Contract con, double averageCost) {
         if("OPT".equals(con.secType().getApiString()))
             return averageCost / 100;
         return averageCost;
