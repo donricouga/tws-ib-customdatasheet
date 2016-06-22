@@ -1,10 +1,12 @@
 package ca.riveros.ib.ui;
 
 import ca.riveros.ib.actions.ContractDetailsHandler;
+import ca.riveros.ib.actions.LiveOrderHandler;
 import ca.riveros.ib.actions.MktDataHandler;
 import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.client.Contract;
+import com.ib.client.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -68,6 +70,10 @@ public class IBTableModel extends DefaultTableModel {
                 IBCustomTable.INSTANCE.showOut("Requesting Contract Details for contract \n" + newContract);
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
 
+            //Test
+            Order order = new Order();
+            order.whatIf(true);
+            IBCustomTable.INSTANCE.controller().placeOrModifyOrder(newContract, order, null);
         }
         else {
             System.out.println("UPDATING ROW");
