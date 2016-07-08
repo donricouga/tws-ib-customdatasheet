@@ -18,16 +18,17 @@ public class LiveOrderHandler implements ApiController.ILiveOrderHandler {
 
     @Override
     public void openOrderEnd() {
-
+        System.out.println("OPEN ORDER END");
     }
 
     @Override
-    public void orderStatus(int i, OrderStatus orderStatus, double v, double v1, double v2, long l, int i1, double v3, int i2, String s) {
-
+    public void orderStatus(int orderId, OrderStatus status, double filled, double remaining,
+                            double avgFillPrice, long permId, int parentId, double lastFillPrice, int clientId, String whyHeld) {
+        System.out.println("ORDER STATUS : " + status + " WHY HELD : " + whyHeld);
     }
 
     @Override
-    public void handle(int i, int i1, String s) {
-
+    public void handle(int orderId, int errorCode, String errorMsg) {
+        System.out.println("ORDER ID " + orderId);
     }
 }

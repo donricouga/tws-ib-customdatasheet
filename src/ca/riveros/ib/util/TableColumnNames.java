@@ -40,7 +40,8 @@ public enum TableColumnNames {
     IMPVOLPER(26, "ImpVol %"),
     BID(27,"Bid"),  //Hide This Column
     ASK(28,"Ask"),  //Hide This Column
-    CONTRACTID(29, "Contract Id"); //Hid This Column
+    CONTRACTID(29, "Contract Id"), //Hide This Column
+    SYMBOL(30, "Symbol"); //Hide this Column
 
 
 

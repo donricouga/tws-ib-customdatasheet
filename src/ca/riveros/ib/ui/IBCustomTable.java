@@ -3,6 +3,7 @@ package ca.riveros.ib.ui;
 import ca.riveros.ib.actions.AccountInfoHandler;
 import ca.riveros.ib.actions.AccountSummaryHandler;
 import ca.riveros.ib.data.IBTableModelListener;
+import ca.riveros.ib.util.DataExportUtil;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.client.Types;
 import com.ib.controller.*;
@@ -73,6 +74,9 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         setUIFont (new javax.swing.plaf.FontUIResource(new Font("MS Mincho",Font.PLAIN, 17)));
 
         model = createTableModel();
+
+        //start Data Export Util with Timer
+        new DataExportUtil();
 
         //Create the JTable with the Default TableModel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -217,6 +221,8 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         m_acctList.addAll( list);
         comboBoxModel.addElement(DEFAULT_SELECT_ITEM);
         for(String s : list) {
+            if(s.contains("F"))
+                s = s + "A";
             comboBoxModel.addElement(s);
         }
     }
@@ -311,7 +317,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
     }
 
     private void addRenderers() {
-        //table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new ClosingPosForProfRenderer());
+        //table.getColumnModel().getColumn(closPosProfIdx).setCellRenderer(new TotalsRenderer());
         table.getColumnModel().getColumn(UNREALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
         table.getColumnModel().getColumn(REALPNL.ordinal()).setCellRenderer(new UnPNLRenderer());
         table.getColumnModel().getColumn(KCTAKEPROFITDOL.ordinal()).setCellRenderer(new UnPNLRenderer());

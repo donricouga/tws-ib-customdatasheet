@@ -3,6 +3,7 @@ package ca.riveros.ib.ui;
 import ca.riveros.ib.actions.ContractDetailsHandler;
 import ca.riveros.ib.actions.LiveOrderHandler;
 import ca.riveros.ib.actions.MktDataHandler;
+import ca.riveros.ib.actions.OrderHandler;
 import ca.riveros.ib.data.IBTableModelListener;
 import ca.riveros.ib.util.TableColumnNames;
 import com.ib.client.Contract;
@@ -23,6 +24,9 @@ import static ca.riveros.ib.util.TableColumnNames.CONTRACTID;
  * Created by rriveros on 3/20/16.
  */
 public class IBTableModel extends DefaultTableModel {
+
+    /** Keeps track of the totals **/
+    private Integer TOTALS_ROW = 1;
 
     /** Currently Selected Account Code **/
     private String selectedAcctCode = null;
@@ -71,9 +75,9 @@ public class IBTableModel extends DefaultTableModel {
             IBCustomTable.INSTANCE.controller().reqContractDetails(newContract, new ContractDetailsHandler(contractId));
 
             //Test
-            Order order = new Order();
+            /*Order order = new Order();
             order.whatIf(true);
-            IBCustomTable.INSTANCE.controller().placeOrModifyOrder(newContract, order, null);
+            IBCustomTable.INSTANCE.controller().placeOrModifyOrder(newContract, order, null);*/
         }
         else {
             System.out.println("UPDATING ROW");
@@ -85,6 +89,27 @@ public class IBTableModel extends DefaultTableModel {
             }
         }
 
+    }
+
+    /**
+     * Sums all Columns at once and adds it to the end of the table
+     */
+    private void sumTotalsForAllColumns() {
+        Vector<Double> totals = new Vector(super.getColumnCount());
+        Collections.fill(totals, 0.0);
+
+        if(TOTALS_ROW != 1)
+            removeRow(TOTALS_ROW);
+        else
+            TOTALS_ROW = TOTALS_ROW + 1;
+
+        for(int i = 1; i < getColumnCount(); i++) {
+            for(int j = 0; j < getRowCount(); j++) {
+                Object o = getValueAt(j, i);
+
+            }
+        }
+        addRow(totals);
     }
 
     private void setPrecisionOnVector(Vector v) {

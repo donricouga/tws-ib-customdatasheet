@@ -92,6 +92,7 @@ public class FixedColumnScrollPane extends JScrollPane {
         headerColumnTable.setMaximumSize(new Dimension(headerColumnMaxSize, 10000));
         headerColumnTable.setColumnSelectionAllowed(false);
         headerColumnTable.setCellSelectionEnabled(false);
+        headerColumnTable.getColumnModel().getColumn(0).setCellRenderer(new TotalsRenderer());
 
         // Put in a viewport so we can control it
         JViewport headerViewport = new JViewport();
@@ -122,6 +123,9 @@ public class FixedColumnScrollPane extends JScrollPane {
         scrollViewTable.getColumnModel().getColumn(CONTRACTID.ordinal() - 1).setPreferredWidth(0);
         scrollViewTable.getColumnModel().getColumn(CONTRACTID.ordinal() - 1).setMaxWidth(0);
         scrollViewTable.getColumnModel().getColumn(CONTRACTID.ordinal() - 1).setMinWidth(0);
+        scrollViewTable.getColumnModel().getColumn(SYMBOL.ordinal() - 1).setPreferredWidth(0);
+        scrollViewTable.getColumnModel().getColumn(SYMBOL.ordinal() - 1).setMaxWidth(0);
+        scrollViewTable.getColumnModel().getColumn(SYMBOL.ordinal() - 1).setMinWidth(0);
         scrollViewTable.getColumnModel().getColumn(QTY.ordinal() - 1).setPreferredWidth(50);
         scrollViewTable.getColumnModel().getColumn(QTY.ordinal() - 1).setMaxWidth(50);
         scrollViewTable.getColumnModel().getColumn(KCQTY.ordinal() - 1).setPreferredWidth(100);
