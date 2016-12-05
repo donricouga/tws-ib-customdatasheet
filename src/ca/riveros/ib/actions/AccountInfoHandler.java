@@ -85,7 +85,7 @@ public class AccountInfoHandler implements ApiController.IAccountHandler {
 
     @Override
     public void accountDownloadEnd(String account) {
-        //not in this project
+        System.out.println("FINISHED DOWNLOADING ACCOUNT DATA!!!!");
     }
 
     @Override

@@ -76,7 +76,7 @@ public class IBCustomTable implements ApiController.IConnectionHandler{
         model = createTableModel();
 
         //start Data Export Util with Timer
-        new DataExportUtil();
+        //new DataExportUtil();
 
         //Create the JTable with the Default TableModel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
